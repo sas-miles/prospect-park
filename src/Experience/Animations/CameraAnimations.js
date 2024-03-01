@@ -25,7 +25,6 @@ export default class CameraAnimations {
     }
 
     setCameraPath() {
-        this.cameraPath = load
     }
 
     setHover() {
