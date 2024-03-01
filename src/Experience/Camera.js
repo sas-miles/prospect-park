@@ -23,6 +23,13 @@ export default class Camera{
     setControls() {
         this.controls = new MapControls(this.instance, this.canvas)
         this.controls.enableDamping = true
+        this.controls.enableDamping = true
+        this.controls.dampingFactor = 0.03
+        this.controls.screenSpacePanning = false
+        this.controls.minDistance = 5
+        this.controls.maxDistance = 20
+        this.controls.maxPolarAngle = Math.PI / 2
+
     }
 
     resize() {
