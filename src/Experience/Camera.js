@@ -14,6 +14,19 @@ export default class Camera{
         if(this.debug.active){
             this.debugFolder = this.debug.gui.addFolder('Camera')
         }
+
+        //Setup
+        this.startPosition = {
+            x: 0,
+            y: 90.17,
+            z: 85
+        }
+
+        this.startRotation = {
+            x: THREE.MathUtils.degToRad(-74),
+            y: THREE.MathUtils.degToRad(0),
+            z: THREE.MathUtils.degToRad(0),
+        }
         
         this.setInstance()
     }
@@ -34,6 +47,9 @@ export default class Camera{
 
         this.instance = new THREE.PerspectiveCamera(fovDegrees, aspectRatio, nearPlane, farPlane)
         this.scene.add(this.instance)
+
+        this.instance.position.set(this.startPosition.x, this.startPosition.y, this.startPosition.z)
+        this.instance.rotation.set(this.startRotation.x, this.startRotation.y, this.startRotation.z)
 
         //Debug
         if(this.debug.active){

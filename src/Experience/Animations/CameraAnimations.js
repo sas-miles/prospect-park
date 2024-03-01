@@ -18,26 +18,39 @@ export default class CameraAnimations {
         }
 
 
-        //Setup
-        this.startPosition = {
+        this.setHover()
+    }
+
+    setHover() {
+        let time = 0;
+        const speed = .02;
+        const amplitude = 0.04; // The amplitude of the wave, adjust to get the desired effect
+    
+        gsap.timeline({repeat: -1})
+        .to(this.camera.rotation, {
+            z: "+=" + (2 * Math.PI),
+            duration: 40,
+            ease: "none"
+        }, "sync")
+        .to(this.camera.position, {
             x: 0,
-            y: 90.17,
-            z: 85
-        }
-
-        this.startRotation = {
-            x: THREE.MathUtils.degToRad(-74),
-            y: THREE.MathUtils.degToRad(0),
-            z: THREE.MathUtils.degToRad(0),
-        }
-
-        this.setIntro()
+            z: 85,
+            duration: 20,
+            ease: "none"
+        }, "sync")
+    
+        gsap.ticker.add(() => {
+            time += speed;
+    
+            // Calculate the new rotation using the cosine function
+            const newRotationY = amplitude * Math.cos(time);
+    
+            // Apply the new rotation to the camera
+            this.camera.rotation.y = newRotationY;
+        });
     }
 
     setIntro() {
-        this.camera.position.set(this.startPosition.x, this.startPosition.y, this.startPosition.z)
-        this.camera.rotation.set(this.startRotation.x, this.startRotation.y, this.startRotation.z)
-
         gsap.timeline({ease: 'power3.out'})
         .to(this.camera.rotation, {
             x: THREE.MathUtils.degToRad(-12),
