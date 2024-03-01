@@ -21,12 +21,12 @@ export default class CameraAnimations {
         //Setup
         this.startPosition = {
             x: 0,
-            y: 45,
-            z: 170
+            y: 90.17,
+            z: 85
         }
 
         this.startRotation = {
-            x: THREE.MathUtils.degToRad(0),
+            x: THREE.MathUtils.degToRad(-74),
             y: THREE.MathUtils.degToRad(0),
             z: THREE.MathUtils.degToRad(0),
         }
