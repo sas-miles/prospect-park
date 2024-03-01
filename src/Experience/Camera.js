@@ -6,30 +6,63 @@ import Experience from './Experience.js'
 export default class Camera{
     constructor() {
         this.experience = new Experience()
+        this.debug = this.experience.debug
         this.sizes = this.experience.sizes
         this.scene = this.experience.scene
         this.canvas = this.experience.canvas
+
+        if(this.debug.active){
+            this.debugFolder = this.debug.gui.addFolder('Camera')
+        }
         
         this.setInstance()
-        this.setControls()
     }
 
     setInstance() {
-        this.instance = new THREE.PerspectiveCamera(35, this.sizes.width / this.sizes.height, 0.1, 2000)
-        this.instance.position.set(6, 4, 8)
+
+        //Camera Calculation
+        const sensorSize = 36; // 36mm (full-frame)
+        const focalLength = 50; // 50mm lens
+
+        const fovRadians = 2 * Math.atan(sensorSize / (2 * focalLength));
+        const fovDegrees = fovRadians * (180 / Math.PI);
+
+        const aspectRatio = this.experience.sizes.width / this.experience.sizes.height;
+        const nearPlane = 0.1;
+        const farPlane = 2000;
+
+
+        this.instance = new THREE.PerspectiveCamera(fovDegrees, aspectRatio, nearPlane, farPlane)
         this.scene.add(this.instance)
-    }
 
-    setControls() {
-        this.controls = new MapControls(this.instance, this.canvas)
-        this.controls.enableDamping = true
-        this.controls.enableDamping = true
-        this.controls.dampingFactor = 0.03
-        this.controls.screenSpacePanning = false
-        this.controls.minDistance = 5
-        this.controls.maxDistance = 20
-        this.controls.maxPolarAngle = Math.PI / 2
+        //Debug
+        if(this.debug.active){
+            this.debugFolder.add(this.instance.position, 'x').step(0.01).min(-100).max(100).name('positionX')
+            this.debugFolder.add(this.instance.position, 'y').step(0.01).min(-100).max(100).name('positionY')
+            this.debugFolder.add(this.instance.position, 'z').step(0.01).min(-100).max(600).name('positionZ')
 
+
+            // Create separate variables for the UI
+this.rotationX = THREE.MathUtils.radToDeg(this.instance.rotation.x);
+this.rotationY = THREE.MathUtils.radToDeg(this.instance.rotation.y);
+this.rotationZ = THREE.MathUtils.radToDeg(this.instance.rotation.z);
+
+this.debugFolder.add(this, 'rotationX').step(1).min(-360).max(360).name('rotationX').onChange((value) => {
+    this.instance.rotation.x = THREE.MathUtils.degToRad(value);
+    this.experience.eventEmitter.trigger('camera.rotationChanged', [this.instance.rotation]);
+});
+
+this.debugFolder.add(this, 'rotationY').step(1).min(-360).max(360).name('rotationY').onChange((value) => {
+    this.instance.rotation.y = THREE.MathUtils.degToRad(value);
+    this.experience.eventEmitter.trigger('camera.rotationChanged', [this.instance.rotation]);
+});
+
+this.debugFolder.add(this, 'rotationZ').step(1).min(-360).max(360).name('rotationZ').onChange((value) => {
+    this.instance.rotation.z = THREE.MathUtils.degToRad(value);
+    this.experience.eventEmitter.trigger('camera.rotationChanged', [this.instance.rotation]);
+});
+
+        }
     }
 
     resize() {
@@ -38,6 +71,5 @@ export default class Camera{
     }
 
     update() {
-        this.controls.update()
     }
 }
