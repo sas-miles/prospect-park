@@ -12,42 +12,36 @@ export default class CameraAnimations {
         this.time = this.experience.time
         this.debug = this.experience.debug
 
+        this.cameraPath = './path/camera-path.json'
+        console.log(this.cameraPath)
+
         //Debug
         if(this.debug.active){
             this.debugFolder = this.debug.gui.addFolder('CameraAnimations')
         }
 
-
+        this.setCameraPath()
         this.setHover()
     }
 
+    setCameraPath() {
+        this.cameraPath = load
+    }
+
     setHover() {
-        let time = 0;
-        const speed = .005;
-        const amplitude = 0.07; // The amplitude of the wave, adjust to get the desired effect
     
-        gsap.timeline({repeat: -1})
+        gsap.timeline({})
         .to(this.camera.rotation, {
-            z: "+=" + (2 * Math.PI),
-            duration: 80,
+            z:0,
+            duration: 100,
             ease: "none"
         }, "sync")
-        .to(this.camera.position, {
-            x: 0,
-            z: 85,
-            duration: 80,
-            ease: "none"
-        }, "sync")
-    
-        gsap.ticker.add(() => {
-            time += speed;
-    
-            // Calculate the new rotation using the cosine function
-            const newRotationY = amplitude * Math.cos(time);
-    
-            // Apply the new rotation to the camera
-            this.camera.rotation.y = newRotationY;
-        });
+        // .to(this.camera.position, {
+        //     x: 0,
+        //     z: 85,
+        //     duration: 100,
+        //     ease: "none"
+        // }, "sync")
     }
 
     setIntro() {
