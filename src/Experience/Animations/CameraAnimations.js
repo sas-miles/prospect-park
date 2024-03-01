@@ -24,18 +24,18 @@ export default class CameraAnimations {
     setHover() {
         let time = 0;
         const speed = .005;
-        const amplitude = 0.04; // The amplitude of the wave, adjust to get the desired effect
+        const amplitude = 0.07; // The amplitude of the wave, adjust to get the desired effect
     
         gsap.timeline({repeat: -1})
         .to(this.camera.rotation, {
             z: "+=" + (2 * Math.PI),
-            duration: 40,
+            duration: 80,
             ease: "none"
         }, "sync")
         .to(this.camera.position, {
             x: 0,
             z: 85,
-            duration: 20,
+            duration: 80,
             ease: "none"
         }, "sync")
     
