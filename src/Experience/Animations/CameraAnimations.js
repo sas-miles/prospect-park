@@ -23,7 +23,7 @@ export default class CameraAnimations {
 
     setHover() {
         let time = 0;
-        const speed = .02;
+        const speed = .005;
         const amplitude = 0.04; // The amplitude of the wave, adjust to get the desired effect
     
         gsap.timeline({repeat: -1})
