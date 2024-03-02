@@ -3,30 +3,31 @@ import Environment from './Environment.js'
 import Map from './Map.js'
 import Floor from './Floor.js'
 import Plane from './Plane.js'
+import CameraAnimations from '../Animations/CameraAnimations.js'
+import EventEmitter from '../Utils/EventEmitter.js'
 
 
-export default class World {
+export default class World extends EventEmitter{
     constructor() {
+        super()
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.resources = this.experience.resources
 
         this.resources.on('ready', () => {
-            console.log('Resources ready')
+            console.log('Resources ready');
 
             //Setup
-            this.floor = new Floor()
-            this.fox = new Map()
-            this.environment = new Environment()
-            
-        }) 
+            this.floor = new Floor();
+            this.map = new Map();
+            this.environment = new Environment();
+            this.cameraAnimations = new CameraAnimations(this.resources);
+        });
 
         this.plane = new Plane()
 
     }
 
     update() {
-        if(this.fox)
-            this.fox.update()
     }   
 }

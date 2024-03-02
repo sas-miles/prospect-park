@@ -26,6 +26,7 @@ export default class Resources extends EventEmitter {
     this.loaders.gltfLoader.setDRACOLoader(this.DRACOLoader);
     this.loaders.textureLoader = new THREE.TextureLoader();
     this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
+    this.loaders.fileLoader = new THREE.FileLoader();
   }
 
   startLoading() {
@@ -55,6 +56,13 @@ export default class Resources extends EventEmitter {
             this.audio.setBuffer(buffer);
             this.audio.setLoop(true);
             this.sourceLoaded(source, this.audio);
+          });
+          break;
+
+        case "file":
+          this.loaders.fileLoader.load(source.path, (file) => {
+            const parsedFile = JSON.parse(file);
+            this.sourceLoaded(source, parsedFile); // Pass parsed JSON
           });
           break;
 

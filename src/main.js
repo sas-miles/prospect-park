@@ -5,7 +5,6 @@ import Experience from './Experience/Experience.js'
 
 const experience = new Experience(document.querySelector('canvas.webgl'))
 
-console.log(restartWebflow)
 window.Webflow ||= [];
 window.Webflow.push(async () => {
   

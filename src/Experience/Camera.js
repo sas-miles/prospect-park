@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { MapControls } from "three/addons/controls/MapControls.js";
 
 import Experience from "./Experience.js";
 
@@ -18,7 +17,7 @@ export default class Camera {
     //Setup
     this.startPosition = {
       x: 7.03,
-      y: 1.41,
+      y: 1.5,
       z: 85.35,
     };
 
@@ -144,5 +143,7 @@ export default class Camera {
     this.instance.updateProjectionMatrix();
   }
 
-  update() {}
+  update() {
+    
+  }
 }

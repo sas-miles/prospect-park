@@ -39,7 +39,10 @@ export default class Experience{
         this.renderer = new Renderer()
         this.world = new World()
         this.eventEmitter = new EventEmitter()
-        this.cameraAnimations = new CameraAnimations()
+       
+        this.world.on('ready', () => {
+            console.log('World is ready');
+        });
 
 
         //Sizes Resize Event
@@ -61,8 +64,11 @@ export default class Experience{
     update(){
         this.camera.update()
         
+
+        
         // this.controls.update()
         this.world.update()
+        
         this.renderer.update()
     }
 
