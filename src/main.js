@@ -3,10 +3,11 @@ import { restartWebflow } from "@finsweet/ts-utils";
 
 import Experience from './Experience/Experience.js'
 
-const experience = new Experience(document.querySelector('canvas.webgl'))
 
 window.Webflow ||= [];
 window.Webflow.push(async () => {
+
+const experience = new Experience(document.querySelector('canvas.webgl'))
   
   barba.init({
     transitions: [{

@@ -24,7 +24,6 @@ export default class Controls {
         window.addEventListener('pointerdown', () => {
             this.time.trigger('mouseDown');
         });
-        // can't use 'mousedown' event because of the OrbitControls library
 
         // after releasing the mouse button
         window.addEventListener('click', () => {
