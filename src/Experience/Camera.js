@@ -17,7 +17,7 @@ export default class Camera {
     //Setup
     this.startPosition = {
       x: 7.03,
-      y: 10.4,
+      y: 8,
       z: 85.35,
     };
 
