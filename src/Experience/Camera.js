@@ -17,13 +17,13 @@ export default class Camera {
     //Setup
     this.startPosition = {
       x: 7.03,
-      y: 1.5,
+      y: 10.4,
       z: 85.35,
     };
 
     this.startRotation = {
-      x: THREE.MathUtils.degToRad(0),
-      y: THREE.MathUtils.degToRad(26),
+      x: THREE.MathUtils.degToRad(-9),
+      y: THREE.MathUtils.degToRad(0),
       z: THREE.MathUtils.degToRad(0),
     };
 
@@ -40,8 +40,8 @@ export default class Camera {
 
     const aspectRatio =
       this.experience.sizes.width / this.experience.sizes.height;
-    const nearPlane = 0.1;
-    const farPlane = 2000;
+    const nearPlane = 5;
+    const farPlane = 400;
 
     this.instance = new THREE.PerspectiveCamera(
       fovDegrees,
@@ -136,6 +136,10 @@ export default class Camera {
           ]);
         });
     }
+  }
+
+  getStartRotation() {
+    return this.startRotation;
   }
 
   resize() {

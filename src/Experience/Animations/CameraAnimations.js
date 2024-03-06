@@ -16,13 +16,12 @@ export default class CameraAnimations {
 
         this.resource = this.resources.items.cameraPath;
 
-        this.setCameraPath();
-        this.animateCameraAlongPath();
+        // this.setCameraPath();
+        // this.animateCameraAlongPath();
         
         
     }
     
-
 
     setCameraPath() {
     
@@ -38,6 +37,8 @@ export default class CameraAnimations {
         this.path = new THREE.CatmullRomCurve3(points);
     
     }
+
+    
     animateCameraAlongPath() {
         // Ensure the path is set
         if (!this.path) {

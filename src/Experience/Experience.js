@@ -10,6 +10,7 @@ import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
 import Controls from './Controls.js'
 import CameraAnimations from './Animations/CameraAnimations.js'
+import PostProcessing from './PostProcessing.js'
 
 import sources from './sources.js'
 
@@ -39,6 +40,7 @@ export default class Experience{
         this.renderer = new Renderer()
         this.world = new World()
         this.eventEmitter = new EventEmitter()
+        this.postProcessing = new PostProcessing()
        
         this.world.on('ready', () => {
             console.log('World is ready');
@@ -59,17 +61,19 @@ export default class Experience{
     resize(){
         this.camera.resize()
         this.renderer.resize()
+        this.postProcessing.resize()
     }
 
     update(){
         this.camera.update()
-        
+        this.controls.update()
 
         
         // this.controls.update()
         this.world.update()
         
         this.renderer.update()
+        this.postProcessing.update()
     }
 
 
