@@ -20,13 +20,12 @@ export default class World extends EventEmitter{
 
             //Setup
             this.floor = new Floor();
-            this.ground = new Ground();
+            // this.ground = new Ground();
             this.map = new Map();
             this.environment = new Environment();
             this.cameraAnimations = new CameraAnimations(this.resources);
         });
 
-        this.plane = new Plane()
 
     }
 

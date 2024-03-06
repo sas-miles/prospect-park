@@ -77,6 +77,7 @@ export default class Environment{
         }
 
         this.environmentMap.updateMaterial()
+        this.scene.background = this.environmentMap.texture
 
         //Debug
         if(this.debug.active){
