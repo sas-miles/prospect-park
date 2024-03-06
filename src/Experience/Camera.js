@@ -22,7 +22,7 @@ export default class Camera {
     };
 
     this.startRotation = {
-      x: THREE.MathUtils.degToRad(-9),
+      x: THREE.MathUtils.degToRad(0),
       y: THREE.MathUtils.degToRad(0),
       z: THREE.MathUtils.degToRad(0),
     };

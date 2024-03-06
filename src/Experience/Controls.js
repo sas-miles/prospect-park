@@ -18,7 +18,7 @@ export default class Controls {
         
         this.currentRotationY = 0
         this.currentTargetPositionZ = 0
-        this.fixedPitchValue = THREE.MathUtils.degToRad(-9); 
+        // this.fixedPitchValue = THREE.MathUtils.degToRad(-9); 
 
         this.setMouse();
     }
@@ -26,8 +26,7 @@ export default class Controls {
     setMouse() {
         this.mouse = new THREE.Vector2();
 
-        // triggered when the mouse moves
-        window.addEventListener('mousemove', (event) => {
+        const handleMouseMove = (clientX, clientY) => {
             this.mouse.x = event.clientX / this.sizes.width * 2 - 1;
             this.mouse.y = -(event.clientY / this.sizes.height) * 2 + 1;
 
@@ -40,6 +39,12 @@ export default class Controls {
                 this.dragStart.x = this.mouse.x;
                 this.dragStart.y = this.mouse.y;
             }
+        }
+
+        // triggered when the mouse moves
+        window.addEventListener('mousemove', (event) => {
+            this.time.trigger('mouseMove');
+            handleMouseMove(event.clientX, event.clientY);
         });
 
         // after pressing down the mouse button
@@ -49,8 +54,6 @@ export default class Controls {
             this.isDragging = true
             this.dragStart.x = this.mouse.x
             this.dragStart.y = this.mouse.y
-
-            console.log('down', this.mouse.x, this.mouse.y)
         });
 
         // after releasing the mouse button
@@ -80,25 +83,20 @@ export default class Controls {
     update() {
         // Rotate around Y axis based on currentRotationY. This affects yaw only.
         this.camera.rotation.y += (this.currentRotationY - this.camera.rotation.y) * this.damping;
-
-        // After rotating, explicitly set the camera's pitch back to the fixed value.
-        // This ensures the pitch does not change due to the yaw rotation.
-        this.camera.rotation.x = this.fixedPitchValue;
-
-        // Calculate forward direction based on current yaw. Pitch influence is not a concern here
-        // since we reset the pitch above.
+        
         const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.camera.quaternion);
-        forward.y = 0; // Ensure horizontal movement by neutralizing vertical component
-        forward.normalize(); // Ensure consistent movement speed
 
-        // Apply movement.
         const movementAmount = forward.multiplyScalar(this.currentTargetPositionZ);
+
         this.camera.position.add(movementAmount);
 
-        // Damping for smooth stopping.
+        // Gradually reduce the movement speed when not dragging for smooth stopping
         if (!this.isDragging) {
-            this.currentTargetPositionZ *= 1 - this.damping;
-        }
+        this.currentTargetPositionZ *= 1 - this.damping;
+         }
+
+
+
     }
     
     
