@@ -17,6 +17,7 @@ export default class PostProcessing {
         this.shaderPass = new ShaderPass()
         this.bloom = new UnrealBloomPass()
         this.gamma = new ShaderPass(GammaCorrectionShader)
+        this.debug = this.experience.debug
 
         this.setEffectComposer()
         this.setRenderPass()
@@ -32,9 +33,9 @@ export default class PostProcessing {
     }
 
     setBloom() {
-        this.bloom.strength = .2
-        this.bloom.radius = .8
-        this.bloom.threshold = 0.3
+        this.bloom.strength = .3
+        this.bloom.radius = .4
+        this.bloom.threshold = 0.45
     }
 
     setRenderPass() {

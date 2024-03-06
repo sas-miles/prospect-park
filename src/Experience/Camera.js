@@ -18,7 +18,7 @@ export default class Camera {
     this.startPosition = {
       x: 7.03,
       y: 8,
-      z: 85.35,
+      z: 36.98,
     };
 
     this.startRotation = {

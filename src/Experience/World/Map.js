@@ -32,6 +32,8 @@ export default class Map {
                 child.receiveShadow = true
             }
         })
+
+        
         
     }
 
