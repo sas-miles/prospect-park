@@ -34,6 +34,11 @@ export default class Resources extends EventEmitter {
       switch (source.type) {
         case "gltfModel":
           this.loaders.gltfLoader.load(source.path, (file) => {
+            file.animations.forEach((clip, index) => {
+              console.log(`[${source.name}] Animation ${index}: ${clip.name}`);
+            });
+
+            
             this.sourceLoaded(source, file);
           });
           break;
