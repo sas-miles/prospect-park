@@ -17,12 +17,12 @@ export default class Camera {
     //Setup
     this.startPosition = {
       x: 7.03,
-      y: 8,
+      y: 20,
       z: 36.98,
     };
 
     this.startRotation = {
-      x: THREE.MathUtils.degToRad(0),
+      x: THREE.MathUtils.degToRad(-20),
       y: THREE.MathUtils.degToRad(0),
       z: THREE.MathUtils.degToRad(0),
     };
@@ -40,7 +40,7 @@ export default class Camera {
 
     const aspectRatio =
       this.experience.sizes.width / this.experience.sizes.height;
-    const nearPlane = 5;
+    const nearPlane = 20;
     const farPlane = 400;
 
     this.instance = new THREE.PerspectiveCamera(
