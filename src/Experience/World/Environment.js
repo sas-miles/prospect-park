@@ -8,7 +8,7 @@ export default class Environment{
         this.scene = this.experience.scene 
         this.resources = this.experience.resources
         this.debug = this.experience.debug
-        this.fog = new THREE.FogExp2( 0xffffff, .004);
+       // this.fog = new THREE.FogExp2( 0xffffff, .004);
 
         //Debug
         if(this.debug.active){
@@ -26,7 +26,7 @@ export default class Environment{
     }
 
     setAmbientLight(){
-        this.ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
+        this.ambientLight = new THREE.AmbientLight('#ffffff', 1)
         this.scene.add(this.ambientLight)
 
         //Debug
