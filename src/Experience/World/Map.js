@@ -25,6 +25,7 @@ export default class Map {
     setModel() {
         this.model = this.resource.scene
         this.scene.add(this.model)
+        console.log(this.model)
 
         this.model.traverse((child) => {
             if(child instanceof THREE.Mesh){
@@ -33,14 +34,45 @@ export default class Map {
             }
         })
 
-        
+        this.setupCameraAnimation()
+    }
+
+    setupCameraAnimation() {
+        this.mixer = null
+        this.camera = null
+
+        this.model.traverse((child) => {
+            if(child.isCamera){
+                this.camera = child
+                console.log("Camera found in gltf", this.camera)
+            }
+        })
+
+        if(this.camera){
+           this.mixer = new THREE.AnimationMixer(this.camera)
+           this.resource.animations.forEach((clip) => {
+            if (clip.name === 'Camera.001Action.001'){
+                const action = this.mixer.clipAction(clip)
+                action.play()
+            }
+           })
+        } else{
+            console.warn("No camera found in gltf")
+        }
+        setTimeout(() => {
+            this.experience.eventEmitter.emit('introAnimationComplete');
+        }, 5000);
         
     }
+
 
     
 
     update() {
-        
+        if (this.mixer){
+            this.mixer.update(this.time.delta)
+        }
+        // console.log(this.mixer)
     }
 
 }
