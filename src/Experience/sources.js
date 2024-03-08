@@ -4,15 +4,15 @@ export default [
         type: 'cubeTexture',
         path:
         [
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/nx.jpg',
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/ny.jpg',
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/nz.jpg',
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/px.jpg',
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/py.jpg',
-            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/px.jpg',
+            'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/nx.png',
+        'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/ny.png',
+        'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/nz.png',
+        'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/px.png',
+        'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/py.png',
+        'https://webflow-public-assets.s3.amazonaws.com/three-projects/starter-files/environmentMap/resting+place/pz.png',
             
         ]
-    }, 
+     },
 
     {
         name: 'grassColorTexture',

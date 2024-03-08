@@ -26,7 +26,7 @@ export default class Environment{
     }
 
     setAmbientLight(){
-        this.ambientLight = new THREE.AmbientLight('#ffffff', 1)
+        this.ambientLight = new THREE.AmbientLight('#cce6ff', 2)
         this.scene.add(this.ambientLight)
 
         //Debug
@@ -39,7 +39,7 @@ export default class Environment{
     }
 
     setSunLight(){
-        this.sunLight = new THREE.DirectionalLight('#ffffff', 4)
+        this.sunLight = new THREE.DirectionalLight('#ffffff', 2.5)
         this.sunLight.castShadow = true
         this.sunLight.shadow.camera.far = 800
         this.sunLight.shadow.camera.near = .8
@@ -84,9 +84,11 @@ export default class Environment{
 
     setEnvironmentMap(){
         this.environmentMap = {}
-        this.environmentMap.intensity = 0.4
+        this.environmentMap.intensity = .2
         this.environmentMap.texture = this.resources.items.environmentMapTexture
         this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace
+     
+
 
         this.scene.environment = this.environmentMap.texture
 
@@ -101,7 +103,7 @@ export default class Environment{
         }
 
         this.environmentMap.updateMaterial()
-        this.scene.background = new THREE.Color(0xaeaeae);
+        this.scene.background = new THREE.Color(0xeef2ff);
 
         //Debug
         if(this.debug.active){

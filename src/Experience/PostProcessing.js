@@ -33,9 +33,9 @@ export default class PostProcessing {
     }
 
     setBloom() {
-        this.bloom.strength = .3
-        this.bloom.radius = .4
-        this.bloom.threshold = 0.45
+        this.bloom.strength = 1
+        this.bloom.radius = .2
+        this.bloom.threshold = .9
     }
 
     setRenderPass() {
