@@ -97,7 +97,7 @@ export default class Experience{
           this.cameraAnimations.mixer.update(this.time.delta);
         }
         console.log('Updating experience')
-        console.log('hi')
+        console.log('hello')
       }
 
 
