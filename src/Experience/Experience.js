@@ -96,9 +96,7 @@ export default class Experience{
         if (this.cameraAnimations && this.cameraAnimations.mixer) {
           this.cameraAnimations.mixer.update(this.time.delta);
         }
-        console.log('hiiii')
-        console.log('Updating experience')
-        console.log('hi')
+
       }
 
 
