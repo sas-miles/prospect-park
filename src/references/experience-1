@@ -42,21 +42,19 @@ export default class Experience{
         this.eventEmitter = new EventEmitter()
         this.postProcessing = new PostProcessing()
         this.interface = new Interface()
-        this.currentCamera = new THREE.PerspectiveCamera();
+        this.cameraAnimations = new CameraAnimations();
         
-        
+
+        this.state = {
+            introAnimationActive: false, // Initially, there's no intro animation playing
+        };
        
-        this.world.eventEmitter.on('ready', () => {
-            console.log('Creating CameraAnimations instance');
-            this.cameraAnimations = new CameraAnimations();
-            this.cameraAnimations.loadGLTFCamera();
-            console.log('CameraAnimations instance created', this.currentCamera);
-            this.cameraAnimations.eventEmitter.on('introAnimationFinished', () => {
-                console.log('Intro animation finished, switching to perspective camera');
-                this.switchToPerspectiveCamera();
-            });
+        this.world.on('ready', () => {
+            
+            console.log('World is ready');
             
         });
+
 
         //Sizes Resize Event
         this.sizes.on('resize', () => {
@@ -69,16 +67,27 @@ export default class Experience{
         })
     }
 
-    switchToPerspectiveCamera() {
-        console.log('Switching to perspective camera');
-        this.currentCamera = this.camera.instance;
-        console.log('Current camera:', this.currentCamera);
+    startIntroAnimation() {
+        this.cameraAnimations.startIntroAnimation();
+    }
+
+    setIntroAnimationActive(isActive) {
+        this.state.introAnimationActive = isActive;
+    }
+    
+    setIntroCamera(camera) {
+        this.introCamera = camera;
     }
 
     getCurrentCamera() {
-    return this.currentCamera;
+        // If the intro animation is active, return the animation camera.
+        // Otherwise, return the main camera instance.
+        if(this.state.introAnimationActive && this.introCamera) {
+            return this.introCamera; // Assuming this.introCamera is set somewhere when the intro starts
+        } else {
+            return this.camera.instance; // Your main camera
+        }
     }
-    
 
     resize(){
         this.camera.resize()
@@ -86,17 +95,19 @@ export default class Experience{
         this.postProcessing.resize()
     }
 
-    update() {
-        this.camera.update();
-        this.controls.update();
-        this.renderer.update(this.currentCamera); // Pass currentCamera to the renderer
-        this.postProcessing.update();
-        this.world.update();
-      
-        if (this.cameraAnimations && this.cameraAnimations.mixer) {
-          this.cameraAnimations.mixer.update(this.time.delta);
-        }
-      }
+    update(){
+        this.camera.update()
+        this.controls.update()
+        this.cameraAnimations.update();
+
+        
+        // this.controls.update()
+       
+        
+        this.renderer.update()
+        this.postProcessing.update()
+        this.world.update()
+    }
 
 
     //Ideally call this on each class

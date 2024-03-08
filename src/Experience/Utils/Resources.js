@@ -35,7 +35,7 @@ export default class Resources extends EventEmitter {
         case "gltfModel":
           this.loaders.gltfLoader.load(source.path, (file) => {
             file.animations.forEach((clip, index) => {
-              console.log(`[${source.name}] Animation ${index}: ${clip.name}`);
+              // console.log(`[${source.name}] Animation ${index}: ${clip.name}`);
             });
 
             
@@ -87,7 +87,7 @@ export default class Resources extends EventEmitter {
     const progress = this.loaded / this.toLoad;
 
     // Emit a progress event with the calculated progress
-    this.trigger("progress", [progress]);
+    this.trigger("progress", progress);
 
     if (this.loaded === this.toLoad) {
       this.trigger("ready");

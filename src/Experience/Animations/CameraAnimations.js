@@ -1,85 +1,60 @@
-import * as THREE from 'three'
-import gsap from 'gsap'
-
-import Experience from '../Experience.js'
+import * as THREE from 'three';
+import gsap from 'gsap';
+import Experience from '../Experience.js';
+import EventEmitter from '../Utils/EventEmitter.js';
 
 export default class CameraAnimations {
+  constructor() {
+    this.experience = new Experience();
+    this.scene = this.experience.scene;
+    this.mainCamera = this.experience.camera.instance; // Your main camera
+    this.time = this.experience.time;
+    this.resources = this.experience.resources;
+    this.introCamera = this.experience.introCamera;
+    this.eventEmitter = new EventEmitter(); // Create an instance of EventEmitter
+    this.gltfCamera = null;
+    this.setupEventListeners();
+    this.loadGLTFCamera();
+  }
 
-    constructor() {
-        this.experience = new Experience()
-        this.scene = this.experience.scene
-        this.camera = this.experience.camera.instance
-        this.time = this.experience.time
-        this.resources = this.experience.resources
-        this.resource = this.resources.items.cameraPath
-
-
-        this.resource = this.resources.items.cameraPath;
-
-        // this.setCameraPath();
-        // this.animateCameraAlongPath();
-        
-        
+  loadGLTFCamera() {
+    this.gltf = this.resources.items.map;
+    this.introCamera = this.gltf.scene.getObjectByName('Camera');
+    this.experience.currentCamera = this.introCamera;
+  
+    // Find the camera animation clip
+    const cameraAnimationClip = this.gltf.animations.find(clip => clip.name === 'Camera.001Action.001');
+  
+    if (cameraAnimationClip) {
+      this.mixer = new THREE.AnimationMixer(this.introCamera);
+      const action = this.mixer.clipAction(cameraAnimationClip);
+      action.play();
+      action.loop = THREE.LoopOnce;
+      action.clampWhenFinished = true;
+      this.mixer.addEventListener('finished', () => {
+        this.eventEmitter.trigger('introAnimationFinished');
+        console.log("Intro animation complete");
+      });
+    } else {
+      console.error('Camera animation clip not found in GLTF file');
     }
-    
+  }
 
-    setCameraPath() {
-    
-        if (!this.resource || !this.resource.points) {
-            console.error('Resource is not loaded or does not contain points.');
-            return;
-        }
-    
-        // Assuming this.resource.points is an array of point objects
-        const points = this.resource.points.map((pt) => new THREE.Vector3(pt.x, pt.y, pt.z));
-    
-    
-        this.path = new THREE.CatmullRomCurve3(points);
-    
+  setupEventListeners() {
+    this.experience.eventEmitter.on('introAnimationFinished', () => {
+      this.switchToMainCamera();
+    });
+  }
+
+  switchToMainCamera() {
+    // Perform any necessary operations to switch to the main camera
+    this.experience.currentCamera = this.mainCamera;
+  }
+
+  update() {
+    if (this.mixer) {
+      this.mixer.update(this.time.delta*.0001);
+      console.log("Updating camera animation");
     }
-
-    
-    animateCameraAlongPath() {
-        // Ensure the path is set
-        if (!this.path) {
-            console.error('Path for animation is not set.');
-            return;
-        }
-    
-        // Object to hold the progress value
-        const progress = {value: 0};
-    
-        // Duration of the animation in seconds
-        const duration = 20; // Adjust duration to your liking
-    
-        gsap.to(progress, {
-            value: 1,
-            duration: duration,
-            onUpdate: () => {
-                // Use the progress value to get the current point on the path
-                const point = this.path.getPointAt(progress.value);
-        
-                // If the animation is near completion, look at the end of the path
-                let lookAtPoint;
-                if (progress.value >= 0.99) { // Change this line
-                    lookAtPoint = this.path.getPointAt(1);
-                } else {
-                    // Otherwise, look ahead on the path to orient the camera
-                    lookAtPoint = this.path.getPointAt((progress.value + 0.01) % 1);
-                }
-        
-                // Update camera position
-                this.camera.position.copy(point);
-        
-                // Update camera orientation to look ahead
-                this.camera.lookAt(lookAtPoint);
-            },
-            ease: "none",
-        });
-    }
-    
-    
-    
-
-
+  }
 }
