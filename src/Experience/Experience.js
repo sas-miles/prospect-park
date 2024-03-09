@@ -15,7 +15,6 @@ import Interface from './Interface.js'
 
 import sources from './sources.js'
 
-
 let instance = null
 
 export default class Experience{
@@ -42,19 +41,10 @@ export default class Experience{
         this.eventEmitter = new EventEmitter()
         this.postProcessing = new PostProcessing()
         this.interface = new Interface()
-        this.currentCamera = new THREE.PerspectiveCamera();
         
         
        
         this.world.eventEmitter.on('ready', () => {
-            console.log('Creating CameraAnimations instance');
-            this.cameraAnimations = new CameraAnimations();
-            this.cameraAnimations.loadGLTFCamera();
-            console.log('CameraAnimations instance created', this.currentCamera);
-            this.cameraAnimations.eventEmitter.on('introAnimationFinished', () => {
-                console.log('Intro animation finished, switching to perspective camera');
-                this.switchToPerspectiveCamera();
-            });
             
         });
 
@@ -68,16 +58,6 @@ export default class Experience{
             this.update()
         })
     }
-
-    switchToPerspectiveCamera() {
-        console.log('Switching to perspective camera');
-        this.currentCamera = this.camera.instance;
-        console.log('Current camera:', this.currentCamera);
-    }
-
-    getCurrentCamera() {
-    return this.currentCamera;
-    }
     
 
     resize(){
@@ -89,13 +69,9 @@ export default class Experience{
     update() {
         this.camera.update();
         this.controls.update();
-        this.renderer.update(this.currentCamera); // Pass currentCamera to the renderer
+        this.renderer.update();
         this.postProcessing.update();
         this.world.update();
-      
-        if (this.cameraAnimations && this.cameraAnimations.mixer) {
-          this.cameraAnimations.mixer.update(this.time.delta);
-        }
 
       }
 

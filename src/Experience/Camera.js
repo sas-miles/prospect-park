@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import Experience from "./Experience.js";
+import { MapControls } from "three/examples/jsm/controls/MapControls.js";
 
 export default class Camera {
   constructor() {
@@ -17,18 +18,17 @@ export default class Camera {
 
     //Setup
     this.startPosition = {
-      x: 7.03,
+      x: -1,
       y: 20,
-      z: 36.98,
+      z: 85,
     };
 
-    this.startRotation = {
-      x: THREE.MathUtils.degToRad(-20),
-      y: THREE.MathUtils.degToRad(0),
-      z: THREE.MathUtils.degToRad(0),
-    };
+    
 
     this.setInstance();
+    this.setControls();
+
+    console.log(this.instance.rotation)
   }
 
   setInstance() {
@@ -41,7 +41,7 @@ export default class Camera {
 
     const aspectRatio =
       this.experience.sizes.width / this.experience.sizes.height;
-    const nearPlane = 20;
+    const nearPlane = 2;
     const farPlane = 400;
 
     this.instance = new THREE.PerspectiveCamera(
@@ -56,11 +56,6 @@ export default class Camera {
       this.startPosition.x,
       this.startPosition.y,
       this.startPosition.z
-    );
-    this.instance.rotation.set(
-      this.startRotation.x,
-      this.startRotation.y,
-      this.startRotation.z
     );
 
     //Debug
@@ -139,9 +134,13 @@ export default class Camera {
     }
   }
 
-  getStartRotation() {
-    return this.startRotation;
+  setControls() {
+    this.controls = new MapControls(this.instance, this.canvas)
+    this.controls.enableDamping = true
+    this.controls.enableRotate = false;
+    this.controls.target.set(-8, -20, 0);
   }
+
 
   resize() {
     this.instance.aspect = this.sizes.width / this.sizes.height;
@@ -149,6 +148,6 @@ export default class Camera {
   }
 
   update() {
-    
+    this.controls.update();
   }
 }
