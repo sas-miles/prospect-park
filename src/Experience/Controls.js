@@ -12,14 +12,11 @@ export default class Controls {
         this.scene = this.experience.scene;
         this.canvas = this.experience.canvas;
         this.camera = this.experience.camera.instance;
-
-         
+        
     }
-
     
 
     update() {
-        // this.controls.update(this.time.delta * 0.001)
     }
     
 }

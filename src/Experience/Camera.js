@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import Experience from "./Experience.js";
-import { MapControls } from "three/examples/jsm/controls/MapControls.js";
+
 
 export default class Camera {
   constructor() {
@@ -18,17 +18,17 @@ export default class Camera {
 
     //Setup
     this.startPosition = {
-      x: -1,
-      y: 8,
-      z: 90,
+      x: 0,
+      y: 0,
+      z: 0,
     };
+    
 
     
 
     this.setInstance();
-    this.setControls();
+    
 
-    console.log(this.instance.rotation)
   }
 
   setInstance() {
@@ -52,11 +52,6 @@ export default class Camera {
     );
     this.scene.add(this.instance);
 
-    this.instance.position.set(
-      this.startPosition.x,
-      this.startPosition.y,
-      this.startPosition.z
-    );
 
     //Debug
     if (this.debug.active) {
@@ -134,17 +129,7 @@ export default class Camera {
     }
   }
 
-  setControls() {
-    this.controls = new MapControls(this.instance, this.canvas)
-    this.controls.enableDamping = true
-    this.controls.enableRotate = true;
-    this.controls.maxDistance = 100;
-    this.controls.minDistance = 80;
-    this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
-this.controls.minPolarAngle = -55* (Math.PI / 180); // 0 degrees
-    this.controls.enableDamping = true;
-    this.controls.target.set(-8, -20, 0);
-  }
+  
 
 
   resize() {
@@ -153,6 +138,6 @@ this.controls.minPolarAngle = -55* (Math.PI / 180); // 0 degrees
   }
 
   update() {
-    this.controls.update();
+    
   }
 }

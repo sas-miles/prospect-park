@@ -5,6 +5,7 @@ import Floor from './Floor.js'
 import Plane from './Plane.js'
 import EventEmitter from '../Utils/EventEmitter.js'
 import Ground from './Ground.js'
+import CameraAnimations from '../Animations/CameraAnimations.js'
 
 
 export default class World{
@@ -21,6 +22,8 @@ export default class World{
             // this.ground = new Ground();
             this.map = new Map();
             this.environment = new Environment();
+            this.cameraAnimations = new CameraAnimations();
+
             this.eventEmitter.trigger('ready');
         });
 
@@ -28,5 +31,8 @@ export default class World{
 
 
     update() {
+        if (this.cameraAnimations) {
+            this.cameraAnimations.update();
+          }
     }   
 }

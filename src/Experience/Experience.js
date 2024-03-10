@@ -8,7 +8,6 @@ import Renderer from './Renderer.js'
 import World from './World/World.js'
 import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
-import Controls from './Controls.js'
 import CameraAnimations from './Animations/CameraAnimations.js'
 import PostProcessing from './PostProcessing.js'
 import Interface from './Interface.js'
@@ -35,7 +34,6 @@ export default class Experience{
         this.scene = new THREE.Scene()
         this.resources = new Resources(sources)
         this.camera = new Camera()
-        this.controls = new Controls()
         this.renderer = new Renderer()
         this.world = new World()
         this.eventEmitter = new EventEmitter()
@@ -43,9 +41,9 @@ export default class Experience{
         this.interface = new Interface()
         
         
+        
        
         this.world.eventEmitter.on('ready', () => {
-            
         });
 
         //Sizes Resize Event
@@ -68,7 +66,7 @@ export default class Experience{
 
     update() {
         this.camera.update();
-        this.controls.update();
+
         this.renderer.update();
         this.postProcessing.update();
         this.world.update();
