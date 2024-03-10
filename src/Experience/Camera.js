@@ -19,8 +19,8 @@ export default class Camera {
     //Setup
     this.startPosition = {
       x: -1,
-      y: 20,
-      z: 85,
+      y: 8,
+      z: 90,
     };
 
     
@@ -137,7 +137,12 @@ export default class Camera {
   setControls() {
     this.controls = new MapControls(this.instance, this.canvas)
     this.controls.enableDamping = true
-    this.controls.enableRotate = false;
+    this.controls.enableRotate = true;
+    this.controls.maxDistance = 100;
+    this.controls.minDistance = 80;
+    this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
+this.controls.minPolarAngle = -55* (Math.PI / 180); // 0 degrees
+    this.controls.enableDamping = true;
     this.controls.target.set(-8, -20, 0);
   }
 

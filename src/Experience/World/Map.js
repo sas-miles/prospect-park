@@ -21,7 +21,6 @@ export default class Map {
         this.model = this.resource.scene;
         this.scene.add(this.model);
 
-        this.model.rotation.x = Math.PI * -0.05;
 
         this.model.traverse((child) => {
             if(child instanceof THREE.Mesh){
