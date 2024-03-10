@@ -29,7 +29,7 @@ export default [
     {
         name: 'map',
         type: 'gltfModel',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/cam-test1.glb'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/Prospect_10.glb'
     },
 
     {
@@ -41,7 +41,7 @@ export default [
     {
         name: 'cameraPath',
         type: 'file',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/camera-path-3.json'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/cam-3.json'
     }
 
 ]
