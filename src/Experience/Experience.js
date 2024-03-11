@@ -42,11 +42,6 @@ export default class Experience{
         this.interface = new Interface()
         
         this.controls = new Controls()
-        console.log(this.controls)
-
-        this.controls.on('hey', () => {
-            console.log('hey I got you')
-        }) 
         
         
        
@@ -61,6 +56,7 @@ export default class Experience{
         //Time Tick Event
         this.time.on('tick', () => {
             this.update()
+            this.controls.update();
         })
     }
     
@@ -73,8 +69,8 @@ export default class Experience{
 
     update() {
         this.camera.update();
-
         this.renderer.update();
+        
         this.postProcessing.update();
         this.world.update();
 

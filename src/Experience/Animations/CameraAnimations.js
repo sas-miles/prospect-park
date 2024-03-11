@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import gsap from "gsap";
 import Experience from "../Experience.js";
-import { MapControls } from "three/examples/jsm/controls/MapControls.js";
 
 export default class CameraAnimations {
   constructor() {
@@ -10,11 +9,9 @@ export default class CameraAnimations {
     this.camera = this.experience.camera.instance; 
     this.time = this.experience.time;
     this.resources = this.experience.resources;
-    this.controls = new MapControls(this.experience.camera.instance, this.experience.canvas)
 
     this.resource = this.resources.items.cameraPath;
     console.log(this.resource)
-    this.setControls()
     
     this.setCameraPath();
     this.animateCameraAlongPath();
@@ -52,7 +49,6 @@ export default class CameraAnimations {
       value: 1,
       duration: duration,
       onUpdate: () => {
-        this.controls.enabled = false;
 
         const point = this.path.getPointAt(progress.value);
 
@@ -61,28 +57,12 @@ export default class CameraAnimations {
 
       },
       onComplete: () => {
-        // Re-enable controls when the animation is complete
-        this.controls.enabled = true;
-        // this.controls.target.copy(this.camera.position);
-        console.log("Camera animation complete", this.camera.position);
+        this.camera.rotation.x = -10 * (Math.PI / 180);
       },
       ease: "none",
     });
   }
 
-  setControls() {
-    this.controls.enableDamping = true
-    this.controls.enableRotate = true;
-    this.controls.maxDistance = 100;
-    this.controls.minDistance = 10;
-
-    // this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
-    // this.controls.minPolarAngle = -55* (Math.PI / 180); // 0 degrees
-    
-    // this.controls.target.set(0,0,0);
-  }
-
   update() {
-    this.controls.update();
   }
 }
