@@ -16,8 +16,6 @@ export default class Controls extends EventEmitter{
         
     }
     
-
-    
     update() {
     }
     

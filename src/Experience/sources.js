@@ -41,7 +41,7 @@ export default [
     {
         name: 'cameraPath',
         type: 'file',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/cam-track.json'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/cam-track2.json'
     }
 
 ]

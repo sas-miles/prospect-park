@@ -48,26 +48,31 @@ export default class CameraAnimations {
     const progress = { value: 0 };
 
     // Duration of the animation in seconds
-    const duration = 4; // Adjust duration to your liking
+    const duration = 6; // Adjust duration to your liking
 
     gsap.to(progress, {
       value: 1,
       duration: duration,
       onUpdate: () => {
+        console.log("Camera animation in progress");
         this.controls.enabled = false;
 
         const point = this.path.getPointAt(progress.value);
 
         // Update camera position
         this.camera.position.copy(point);
+        console.log(point)
 
       },
       onComplete: () => {
+        // Explicitly set the camera to the last point of the path to ensure it ends there
+        const finalPoint = this.path.getPointAt(1);
+        this.camera.position.copy(finalPoint);
         // Re-enable controls when the animation is complete
         this.controls.enabled = true;
-        console.log("Camera animation complete", this.camera.rotation);
+        console.log("Camera animation complete");
       },
-      ease: "power2.inOut",
+      ease: "power2.out",
     });
   }
 
