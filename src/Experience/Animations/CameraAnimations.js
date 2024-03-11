@@ -22,7 +22,7 @@ export default class CameraAnimations {
 
   }
 
-  setCameraPath() {
+ setCameraPath() {
     if (!this.resource || !this.resource.points) {
       console.error("Resource is not loaded or does not contain points.");
       return;
@@ -43,7 +43,7 @@ export default class CameraAnimations {
       console.error("Path for animation is not set.");
       return;
     }
-
+ 
     // Object to hold the progress value
     const progress = { value: 0 };
 
@@ -78,10 +78,10 @@ export default class CameraAnimations {
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
 
-    this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
-    this.controls.minPolarAngle = -55 * (Math.PI / 180); // 0 degrees
+    // this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
+    // this.controls.minPolarAngle = -55 * (Math.PI / 180); // 0 degrees
     
-    this.controls.target.set(0,0,0);
+    //this.controls.target.set(-18,0,0);
   }
 
   update() {
