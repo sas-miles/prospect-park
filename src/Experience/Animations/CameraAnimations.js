@@ -61,6 +61,8 @@ export default class CameraAnimations {
 
         // Update camera position
         this.camera.position.copy(point);
+        // Make the camera look at (0, 0, 0)
+  this.camera.lookAt(0, 0, 0);
         console.log(point)
 
       },
