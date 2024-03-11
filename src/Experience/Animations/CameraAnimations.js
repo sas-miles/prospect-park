@@ -88,7 +88,7 @@ export default class CameraAnimations {
     // this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
     // this.controls.minPolarAngle = -55 * (Math.PI / 180); // 0 degrees
     
-    //this.controls.target.set(-18,0,0);
+    this.controls.target.set(-18,0,0);
   }
 
   update() {
