@@ -129,9 +129,6 @@ export default class Camera {
     }
   }
 
-  
-
-
   resize() {
     this.instance.aspect = this.sizes.width / this.sizes.height;
     this.instance.updateProjectionMatrix();

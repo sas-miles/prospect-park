@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Sizes from './Utils/Sizes.js'
 import Time from './Utils/Time.js'
 import EventEmitter from './Utils/EventEmitter.js'
+import { GridHelper } from 'three'
 
 import Camera from './Camera.js'
 import Renderer from './Renderer.js'
@@ -12,6 +13,7 @@ import CameraAnimations from './Animations/CameraAnimations.js'
 import Controls from './Controls.js'
 import PostProcessing from './PostProcessing.js'
 import Interface from './Interface.js'
+
 
 import sources from './sources.js'
 
@@ -42,7 +44,8 @@ export default class Experience{
         this.interface = new Interface()
         
         this.controls = new Controls()
-        console.log(this.controls)
+
+        
 
         this.controls.on('hey', () => {
             console.log('hey I got you')

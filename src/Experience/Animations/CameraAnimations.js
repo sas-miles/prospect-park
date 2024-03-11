@@ -13,11 +13,13 @@ export default class CameraAnimations {
     this.controls = new MapControls(this.experience.camera.instance, this.experience.canvas)
 
     this.resource = this.resources.items.cameraPath;
-    console.log(this.resource)
+
+
     this.setControls()
     
     this.setCameraPath();
     this.animateCameraAlongPath();
+
   }
 
   setCameraPath() {
@@ -63,23 +65,23 @@ export default class CameraAnimations {
       onComplete: () => {
         // Re-enable controls when the animation is complete
         this.controls.enabled = true;
-        // this.controls.target.copy(this.camera.position);
-        console.log("Camera animation complete", this.camera.position);
+        console.log("Camera animation complete", this.camera.rotation);
       },
-      ease: "none",
+      ease: "power2.inOut",
     });
   }
 
   setControls() {
+
     this.controls.enableDamping = true
     this.controls.enableRotate = true;
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
 
-    // this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
-    // this.controls.minPolarAngle = -55* (Math.PI / 180); // 0 degrees
+    this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
+    this.controls.minPolarAngle = -55 * (Math.PI / 180); // 0 degrees
     
-    // this.controls.target.set(0,0,0);
+    this.controls.target.set(0,0,0);
   }
 
   update() {
