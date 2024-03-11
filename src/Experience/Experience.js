@@ -9,10 +9,9 @@ import Renderer from './Renderer.js'
 import World from './World/World.js'
 import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
-import CameraAnimations from './Animations/CameraAnimations.js'
 import Controls from './Controls.js'
 import PostProcessing from './PostProcessing.js'
-import Interface from './Interface.js'
+// import Interface from './Interface.js'
 
 
 import sources from './sources.js'
@@ -41,7 +40,7 @@ export default class Experience{
         this.world = new World()
         this.eventEmitter = new EventEmitter()
         this.postProcessing = new PostProcessing()
-        this.interface = new Interface()
+        // this.interface = new Interface()
         
         this.controls = new Controls()
 
