@@ -21,21 +21,21 @@ void main() {
 
     // Calculate the vignette effect
     vec2 vignetteCoords = fract(vUv);
-    float v1 = smoothstep(0.8, 0.01, abs(vignetteCoords.x - 0.5));
-    float v2 = smoothstep(0.8, 0.01, abs(vignetteCoords.y - 0.5));
+    float v1 = smoothstep(0.8, 0.001, abs(vignetteCoords.x - 0.5));
+    float v2 = smoothstep(0.8, 0.001, abs(vignetteCoords.y - 0.5));
     float vignetteAmount = v1 * v2; 
 
     // Original color
     vec3 color = texture2D(tDiffuse, vUv).xyz;
 
     // RGB shift effect
-    float shiftAmount = 0.9; // Amount of RGB shift
+    float shiftAmount = 0.1; // Amount of RGB shift
     float edgeIntensity = 0.8 - vignetteAmount; // Apply the shift more on the edges, less in the center
 
     vec2 redOffset = vec2(shiftAmount, 0.0) * edgeIntensity;
     vec2 greenOffset = vec2(-shiftAmount, 0.0) * edgeIntensity;
     vec2 blueOffset = vec2(0.0, shiftAmount) * edgeIntensity;
-    
+
     float r = texture2D(tDiffuse, vUv + redOffset).r;
     float g = texture2D(tDiffuse, vUv + greenOffset).g;
     float b = texture2D(tDiffuse, vUv + blueOffset).b;
@@ -48,9 +48,8 @@ void main() {
 
     // Apply the vignette effect by darkening towards the edges
     finalColor = mix(finalColor, vignetteColor, 1.0 - vignetteAmount);
-    // finalColor = vec3(vignetteAmount);
 
-
+    // finalColor = rgbShiftColor;
 
     // Generate and apply the film grain noise
     float noise = random(vUv * coords) * noiseIntensity;
