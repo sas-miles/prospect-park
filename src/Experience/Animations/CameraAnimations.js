@@ -89,6 +89,23 @@ export default class CameraAnimations {
   }
 
   update() {
+    // Update controls
     this.controls.update();
+  
+    // Get camera position
+    const position = this.camera.position;
+  
+    // Define boundaries
+    const minX = -50, maxX = 50;
+    const minY = -50, maxY = 50;
+    const minZ = 10, maxZ = 100;
+  
+    // Check if camera is out of boundaries and adjust position
+    if (position.x < minX) position.x = minX;
+    if (position.x > maxX) position.x = maxX;
+    if (position.y < minY) position.y = minY;
+    if (position.y > maxY) position.y = maxY;
+    if (position.z < minZ) position.z = minZ;
+    if (position.z > maxZ) position.z = maxZ;
   }
 }
