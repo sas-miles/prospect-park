@@ -83,7 +83,7 @@ export default class CameraAnimations {
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
   
-    this.controls.maxPolarAngle = 70 * (Math.PI / 180); // 90 degrees
+    this.controls.maxPolarAngle = 80 * (Math.PI / 180); // 90 degrees
     this.controls.minPolarAngle = 70 * (Math.PI / 180); // 0 degrees
   
     // Define boundaries
@@ -105,9 +105,21 @@ export default class CameraAnimations {
       else if (position.z > this.maxZ) position.z = this.maxZ;
     });
   }
-  
+
   update() {
     // Update controls
     this.controls.update();
+  
+    // Get camera position
+    const position = this.camera.position;
+  
+    // Check if camera is out of boundaries and adjust position
+    if (position.x < minX) { position.x = minX; this.controls.enableRotate = false; }
+    else if (position.x > maxX) { position.x = maxX; this.controls.enableRotate = false; }
+    else if (position.y < minY) { position.y = minY; this.controls.enableRotate = false; }
+    else if (position.y > maxY) { position.y = maxY; this.controls.enableRotate = false; }
+    else if (position.z < minZ) { position.z = minZ; this.controls.enableRotate = false; }
+    else if (position.z > maxZ) { position.z = maxZ; this.controls.enableRotate = false; }
+    else this.controls.enableRotate = true;
   }
 }
