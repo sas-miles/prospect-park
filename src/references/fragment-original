@@ -21,8 +21,8 @@ void main() {
 
     // Calculate the vignette effect
     vec2 vignetteCoords = fract(vUv);
-    float v1 = smoothstep(0.8, 0.01, abs(vignetteCoords.x - 0.5));
-    float v2 = smoothstep(0.8, 0.01, abs(vignetteCoords.y - 0.5));
+    float v1 = smoothstep(0.3, 0.01, abs(vignetteCoords.x - 0.5));
+    float v2 = smoothstep(0.3, 0.01, abs(vignetteCoords.y - 0.5));
     float vignetteAmount = v1 * v2; 
 
     // Original color
@@ -48,7 +48,6 @@ void main() {
 
     // Apply the vignette effect by darkening towards the edges
     finalColor = mix(finalColor, vignetteColor, 1.0 - vignetteAmount);
-    // finalColor = vec3(vignetteAmount);
 
 
 

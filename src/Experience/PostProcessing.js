@@ -29,8 +29,10 @@ export default class PostProcessing {
         this.setVignette()
         this.setBloom ()
         this.addPasses()
+
         
     }
+
 
     setEffectComposer() {
         this.effectComposer.setSize(this.sizes.width, this.sizes.height)
