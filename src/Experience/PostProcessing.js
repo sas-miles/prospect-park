@@ -1,8 +1,13 @@
+import * as THREE from 'three'
+
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
+
+import vignetteVertexShader from './shaders/vignettePP/vertex.glsl'
+import vignetteFragmentShader from './shaders/vignettePP/fragment.glsl'
 
 import Experience from './Experience.js';
 
@@ -21,6 +26,7 @@ export default class PostProcessing {
 
         this.setEffectComposer()
         this.setRenderPass()
+        this.setVignette()
         this.setBloom ()
         this.addPasses()
         
@@ -30,6 +36,20 @@ export default class PostProcessing {
         this.effectComposer.setSize(this.sizes.width, this.sizes.height)
         this.effectComposer.setPixelRatio(this.sizes.pixelRatio)
 
+    }
+
+    setVignette() {
+        const vignetteShader = {
+            uniforms: {
+                tDiffuse: { value: null },
+                noiseIntensity: { value: 0.0 },
+                vignetteColor: { value: new THREE.Vector3(0.9, 0.9, 0.9) },
+            },
+            vertexShader: vignetteVertexShader,
+            fragmentShader: vignetteFragmentShader
+        }
+
+        this.vignetteShader = new ShaderPass(vignetteShader)
     }
 
     setBloom() {
@@ -45,6 +65,7 @@ export default class PostProcessing {
     addPasses() {
         this.effectComposer.addPass(this.renderPass)
         this.effectComposer.addPass(this.bloom)
+        this.effectComposer.addPass(this.vignetteShader)
         this.effectComposer.addPass(this.gamma)
     }
 

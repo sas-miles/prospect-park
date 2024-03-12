@@ -18,7 +18,7 @@ export default class World{
             console.log('Resources ready');
 
             //Setup
-            // this.floor = new Floor();
+            this.floor = new Floor();
             // this.ground = new Ground();
             this.map = new Map();
             this.environment = new Environment();

@@ -54,16 +54,13 @@ export default class CameraAnimations {
       value: 1,
       duration: duration,
       onUpdate: () => {
-        console.log("Camera animation in progress");
         this.controls.enabled = false;
 
         const point = this.path.getPointAt(progress.value);
 
         // Update camera position
         this.camera.position.copy(point);
-        // Make the camera look at (0, 0, 0)
-  this.camera.lookAt(0, 0, 0);
-        console.log(point)
+        this.camera.lookAt(0, 0, 0);
 
       },
       onComplete: () => {
@@ -85,10 +82,10 @@ export default class CameraAnimations {
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
 
-    // this.controls.maxPolarAngle = 73 * (Math.PI / 180); // 90 degrees
-    // this.controls.minPolarAngle = -55 * (Math.PI / 180); // 0 degrees
+    this.controls.maxPolarAngle = 80 * (Math.PI / 180); // 90 degrees
+    this.controls.minPolarAngle = 0 * (Math.PI / 180); // 0 degrees
     
-    this.controls.target.set(-18,0,0);
+    // this.controls.target.set(-18,0,0);
   }
 
   update() {

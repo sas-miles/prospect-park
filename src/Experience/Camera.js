@@ -17,11 +17,11 @@ export default class Camera {
     }
 
     //Setup
-    // this.startPosition = {
-    //   x: 0,
-    //   y: 0,
-    //   z: 0,
-    // };
+    this.startPosition = {
+      x: 0,
+      y: 0,
+      z: 0,
+    };
     
 
     
