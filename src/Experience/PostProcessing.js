@@ -5,7 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
-
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 import vignetteVertexShader from './shaders/vignettePP/vertex.glsl'
 import vignetteFragmentShader from './shaders/vignettePP/fragment.glsl'
 
@@ -69,6 +69,7 @@ export default class PostProcessing {
         this.effectComposer.addPass(this.bloom)
         this.effectComposer.addPass(this.vignetteShader)
         this.effectComposer.addPass(this.gamma)
+        
     }
 
     update() {  

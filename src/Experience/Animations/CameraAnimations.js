@@ -76,36 +76,32 @@ export default class CameraAnimations {
   }
 
   setControls() {
-    this.controls.enableDamping = true;
+
+    this.controls.enableDamping = true
     this.controls.enableRotate = true;
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
-  
+
     this.controls.maxPolarAngle = 80 * (Math.PI / 180); // 90 degrees
     this.controls.minPolarAngle = 0 * (Math.PI / 180); // 0 degrees
-  
-    // Define boundaries
-    this.minX = -50; this.maxX = 50;
-    this.minY = -50; this.maxY = 50;
-    this.minZ = 10; this.maxZ = 100;
-  
-    // Listen for the change event
-    this.controls.addEventListener('change', () => {
-      // Get camera position
-      const position = this.camera.position;
-  
-      // Check if camera is out of boundaries and adjust position
-      if (position.x < this.minX) position.x = this.minX;
-      else if (position.x > this.maxX) position.x = this.maxX;
-      if (position.y < this.minY) position.y = this.minY;
-      else if (position.y > this.maxY) position.y = this.maxY;
-      if (position.z < this.minZ) position.z = this.minZ;
-      else if (position.z > this.maxZ) position.z = this.maxZ;
-    });
+    
+    // this.controls.target.set(-18,0,0);
   }
-  
+
   update() {
     // Update controls
     this.controls.update();
+  
+    // Get camera position
+    const position = this.camera.position;
+  
+    // Check if camera is out of boundaries and adjust position
+    if (position.x < minX) { position.x = minX; this.controls.enableRotate = false; }
+    else if (position.x > maxX) { position.x = maxX; this.controls.enableRotate = false; }
+    else if (position.y < minY) { position.y = minY; this.controls.enableRotate = false; }
+    else if (position.y > maxY) { position.y = maxY; this.controls.enableRotate = false; }
+    else if (position.z < minZ) { position.z = minZ; this.controls.enableRotate = false; }
+    else if (position.z > maxZ) { position.z = maxZ; this.controls.enableRotate = false; }
+    else this.controls.enableRotate = true;
   }
 }
