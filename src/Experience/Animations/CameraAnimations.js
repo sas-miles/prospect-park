@@ -109,17 +109,5 @@ export default class CameraAnimations {
   update() {
     // Update controls
     this.controls.update();
-  
-    // Get camera position
-    const position = this.camera.position;
-  
-    // Check if camera is out of boundaries and adjust position
-    if (position.x < minX) { position.x = minX; this.controls.enableRotate = false; }
-    else if (position.x > maxX) { position.x = maxX; this.controls.enableRotate = false; }
-    else if (position.y < minY) { position.y = minY; this.controls.enableRotate = false; }
-    else if (position.y > maxY) { position.y = maxY; this.controls.enableRotate = false; }
-    else if (position.z < minZ) { position.z = minZ; this.controls.enableRotate = false; }
-    else if (position.z > maxZ) { position.z = maxZ; this.controls.enableRotate = false; }
-    else this.controls.enableRotate = true;
   }
 }
