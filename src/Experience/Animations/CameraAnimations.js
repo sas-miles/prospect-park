@@ -80,16 +80,16 @@ export default class CameraAnimations {
     this.controls.enableDamping = true;
     // this.controls.dampingFactor = 0.01;
     this.controls.enableRotate = false;
-    this.controls.maxDistance = 90;
+    this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
   
-    this.controls.maxPolarAngle = 80 * (Math.PI / 180); // 90 degrees
+    this.controls.maxPolarAngle = 70 * (Math.PI / 180); // 90 degrees
     this.controls.minPolarAngle = 70 * (Math.PI / 180); // 0 degrees
   
     // Define boundaries
-    this.minX = -10; this.maxX = 10;
-    this.minY = 10; this.maxY = 15;
-    this.minZ = -50; this.maxZ = 100;
+    this.minX = -20; this.maxX = 20;
+    this.minY = 10; this.maxY = 40;
+    this.minZ = -20; this.maxZ = 50;
   
     // Listen for the change event
     this.controls.addEventListener('change', () => {
