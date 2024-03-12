@@ -62,6 +62,7 @@ export default class CameraAnimations {
         this.camera.position.copy(point);
         this.camera.lookAt(0, 0, 0);
 
+
       },
       onComplete: () => {
         // Explicitly set the camera to the last point of the path to ensure it ends there
@@ -76,16 +77,33 @@ export default class CameraAnimations {
   }
 
   setControls() {
-
-    this.controls.enableDamping = true
-    this.controls.enableRotate = true;
-    this.controls.maxDistance = 100;
+    this.controls.enableDamping = true;
+    // this.controls.dampingFactor = 0.01;
+    this.controls.enableRotate = false;
+    this.controls.maxDistance = 90;
     this.controls.minDistance = 10;
 
     this.controls.maxPolarAngle = 80 * (Math.PI / 180); // 90 degrees
-    this.controls.minPolarAngle = 0 * (Math.PI / 180); // 0 degrees
-    
-    // this.controls.target.set(-18,0,0);
+    this.controls.minPolarAngle = 70 * (Math.PI / 180); // 0 degrees
+  
+    // Define boundaries
+    this.minX = -10; this.maxX = 10;
+    this.minY = 10; this.maxY = 15;
+    this.minZ = -50; this.maxZ = 100;
+  
+    // Listen for the change event
+    this.controls.addEventListener('change', () => {
+      // Get camera position
+      const position = this.camera.position;
+  
+      // Check if camera is out of boundaries and adjust position
+      if (position.x < this.minX) position.x = this.minX;
+      else if (position.x > this.maxX) position.x = this.maxX;
+      if (position.y < this.minY) position.y = this.minY;
+      else if (position.y > this.maxY) position.y = this.maxY;
+      if (position.z < this.minZ) position.z = this.minZ;
+      else if (position.z > this.maxZ) position.z = this.maxZ;
+    });
   }
 
   update() {
