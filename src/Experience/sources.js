@@ -42,6 +42,31 @@ export default [
         name: 'cameraPath',
         type: 'file',
         path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/cam-track4.json'
-    }
+    },
+
+    {
+        name: 'car',
+        type: 'gltfModel',
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car.glb'
+    },
+
+    {
+        name: 'carPath',
+        type: 'file',
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track.json'
+    },
+
+    {
+        name: 'helicopter',
+        type: 'gltfModel',
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/helicoptor.glb'
+    },
+
+    {
+        name: 'heliPath',
+        type: 'file',
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/heli-track.json'
+    },
+
 
 ]
