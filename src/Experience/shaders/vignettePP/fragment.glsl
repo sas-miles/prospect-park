@@ -17,20 +17,21 @@ float random(vec2 co) {
 }
 
 void main() {
-    vec2 coords = fract(vUv * vec2(1.0, 1.0));
+    vec2 coords = fract(vUv * vec2(01.0, 1.0));
 
     // Calculate the vignette effect
     vec2 vignetteCoords = fract(vUv);
-    float v1 = smoothstep(0.8, 0.001, abs(vignetteCoords.x - 0.5));
-    float v2 = smoothstep(0.8, 0.001, abs(vignetteCoords.y - 0.5));
+    float v1 = smoothstep(0.9, 0.28, abs(vignetteCoords.x - 0.5));
+    float v2 = smoothstep(0.9, 0.28, abs(vignetteCoords.y - 0.4));
     float vignetteAmount = v1 * v2; 
 
     // Original color
     vec3 color = texture2D(tDiffuse, vUv).xyz;
 
     // RGB shift effect
-    float shiftAmount = 0.1; // Amount of RGB shift
-    float edgeIntensity = 0.8 - vignetteAmount; // Apply the shift more on the edges, less in the center
+    float shiftAmount = 0.005; // Amount of RGB shift
+    float scale = 1.0; // Example scale factor, adjust based on desired effect strength
+    float edgeIntensity = vignetteAmount * scale; // Apply the shift more on the edges, less in the center
 
     vec2 redOffset = vec2(shiftAmount, 0.0) * edgeIntensity;
     vec2 greenOffset = vec2(-shiftAmount, 0.0) * edgeIntensity;

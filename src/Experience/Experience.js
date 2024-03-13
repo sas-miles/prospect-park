@@ -39,7 +39,7 @@ export default class Experience{
         this.renderer = new Renderer()
         this.world = new World()
         this.eventEmitter = new EventEmitter()
-        // this.postProcessing = new PostProcessing()
+        this.postProcessing = new PostProcessing()
         // this.interface = new Interface()
         
         this.controls = new Controls()
@@ -75,9 +75,8 @@ export default class Experience{
 
     update() {
         this.camera.update();
-
         this.renderer.update();
-        // this.postProcessing.update();
+        this.postProcessing.update();
         this.world.update();
 
       }

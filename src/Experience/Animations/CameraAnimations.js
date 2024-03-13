@@ -20,6 +20,7 @@ export default class CameraAnimations {
     this.setCameraPath();
     this.animateCameraAlongPath();
 
+
   }
 
  setCameraPath() {
@@ -68,6 +69,9 @@ export default class CameraAnimations {
         // Explicitly set the camera to the last point of the path to ensure it ends there
         const finalPoint = this.path.getPointAt(1);
         this.camera.position.copy(finalPoint);
+        this.camera.lookAt(0, -10, 0);
+        // this.controls.target.set(0, -10, 0);
+        
         // Re-enable controls when the animation is complete
         this.controls.enabled = true;
         console.log("Camera animation complete");
@@ -78,8 +82,8 @@ export default class CameraAnimations {
 
   setControls() {
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.04;
-    this.controls.enableRotate = false;
+    this.controls.dampingFactor = 0.9;
+    this.controls.enableRotate = true;
     this.controls.maxDistance = 100;
     this.controls.minDistance = 10;
   
@@ -90,9 +94,9 @@ export default class CameraAnimations {
     
   
     // Define boundaries
-    this.minX = -20; this.maxX = 20;
-    this.minY = 10; this.maxY = 20;
-    this.minZ = -20; this.maxZ = 50;
+    this.minX = -50; this.maxX = 50;
+    this.minY = 0; this.maxY = 40;
+    this.minZ = -50; this.maxZ = 70;
   
     // Listen for the change event
     this.controls.addEventListener('change', () => {
