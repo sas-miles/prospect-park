@@ -29,8 +29,5 @@ export default class World{
 
 
     update() {
-        if (this.cameraAnimations) {
-            this.cameraAnimations.update();
-          }
     }   
 }

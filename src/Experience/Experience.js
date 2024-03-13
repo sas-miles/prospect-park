@@ -43,15 +43,7 @@ export default class Experience{
         // this.interface = new Interface()
         
         this.controls = new Controls()
-
         
-
-        this.controls.on('hey', () => {
-            console.log('hey I got you')
-        }) 
-        
-        
-       
         this.world.eventEmitter.on('ready', () => {
         });
 
@@ -74,10 +66,12 @@ export default class Experience{
     }
 
     update() {
+        this.controls.update()
         this.camera.update();
         this.renderer.update();
         this.postProcessing.update();
         this.world.update();
+        this.debug.update();
 
       }
 
@@ -101,8 +95,6 @@ export default class Experience{
                 child.material.dispose()
             }
         })
-
-        this.camera.controls.dispose()
         this.renderer.instance.dispose()
 
         if(this.debug.active){
