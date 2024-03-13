@@ -32,6 +32,15 @@ export default class Controls {
 
     this.normalize();
 
+    this.boundaries = {
+      minX: -30,
+      maxX: 40,
+      minY: 0,
+      maxY: 50,
+      minZ: -40,
+      maxZ: 100
+    }
+
     this.setControls();
 
     this.experience.eventEmitter.on('controls:disable', () => {
@@ -172,6 +181,10 @@ export default class Controls {
     if (!this.isDragging) {
       this.currentTargetPositionZ *= 1 - this.damping;
     }
+
+    this.camera.position.x = Math.max(this.boundaries.minX, Math.min(this.boundaries.maxX, this.camera.position.x));
+    this.camera.position.y = Math.max(this.boundaries.minY, Math.min(this.boundaries.maxY, this.camera.position.y));
+    this.camera.position.z = Math.max(this.boundaries.minZ, Math.min(this.boundaries.maxZ, this.camera.position.z));
   }
   
   
