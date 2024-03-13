@@ -67,10 +67,10 @@ export default class CameraAnimations {
       },
       onComplete: () => {
         // Explicitly set the camera to the last point of the path to ensure it ends there
-        const finalPoint = this.path.getPointAt(1);
-        this.camera.position.copy(finalPoint);
-        this.camera.lookAt(0, -10, 0);
-        // this.controls.target.set(0, -10, 0);
+        // const finalPoint = this.path.getPointAt(1);
+        // this.camera.position.copy(finalPoint);
+        // this.camera.lookAt(0, -10, 0);
+        // // this.controls.target.set(0, -10, 0);
         
         // Re-enable controls when the animation is complete
         this.controls.enabled = true;
@@ -82,35 +82,35 @@ export default class CameraAnimations {
 
   setControls() {
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.9;
+    this.controls.dampingFactor = 0.05;
     this.controls.enableRotate = true;
-    this.controls.maxDistance = 100;
-    this.controls.minDistance = 10;
+    this.controls.maxDistance = 40;
+    this.controls.minDistance = 15;
   
-    this.controls.maxPolarAngle = 70 * (Math.PI / 180); // 90 degrees
-    this.controls.minPolarAngle = 70 * (Math.PI / 180); // 0 degrees
+    this.controls.maxPolarAngle = 70 * (Math.PI / 180); // 90 degrees looking down
+    this.controls.minPolarAngle = 30 * (Math.PI / 180); // 0 degrees looking up
     this.controls.maxAzimuthAngle = Infinity; // Allows unrestricted rotation to the right
     this.controls.minAzimuthAngle = -Infinity; // Allows unrestricted rotation to the left
     
   
     // Define boundaries
-    this.minX = -50; this.maxX = 50;
-    this.minY = 0; this.maxY = 40;
-    this.minZ = -50; this.maxZ = 70;
+    // this.minX = -50; this.maxX = 50;
+    // this.minY = 10; this.maxY = 100;
+    // this.minZ = -50; this.maxZ = 100;
   
-    // Listen for the change event
-    this.controls.addEventListener('change', () => {
-      // Get camera position
-      const position = this.camera.position;
+    // // Listen for the change event
+    // this.controls.addEventListener('change', () => {
+    //   // Get camera position
+    //   const position = this.camera.position;
   
-      // Check if camera is out of boundaries and adjust position
-      if (position.x < this.minX) position.x = this.minX;
-      else if (position.x > this.maxX) position.x = this.maxX;
-      if (position.y < this.minY) position.y = this.minY;
-      else if (position.y > this.maxY) position.y = this.maxY;
-      if (position.z < this.minZ) position.z = this.minZ;
-      else if (position.z > this.maxZ) position.z = this.maxZ;
-    });
+    //   // Check if camera is out of boundaries and adjust position
+    //   if (position.x < this.minX) position.x = this.minX;
+    //   else if (position.x > this.maxX) position.x = this.maxX;
+    //   if (position.y < this.minY) position.y = this.minY;
+    //   else if (position.y > this.maxY) position.y = this.maxY;
+    //   if (position.z < this.minZ) position.z = this.minZ;
+    //   else if (position.z > this.maxZ) position.z = this.maxZ;
+    // });
   } 
   
   update() {

@@ -34,7 +34,7 @@ export default class Camera {
   setInstance() {
     //Camera Calculation
     const sensorSize = 36; // 36mm (full-frame)
-    const focalLength = 70; // 50mm lens
+    const focalLength = 50; // 50mm lens
 
     const fovRadians = 2 * Math.atan(sensorSize / (2 * focalLength));
     const fovDegrees = fovRadians * (180 / Math.PI);
