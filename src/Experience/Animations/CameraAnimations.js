@@ -39,10 +39,13 @@ export default class CameraAnimations{
         return;
     }
 
-    const progress = { value: 0 };
-    const duration = 6; // Duration in seconds
-    const pitch = { angle: THREE.MathUtils.degToRad(0) }; // Start with an initial pitch angle, e.g., 0 degrees
-    const targetPitch = THREE.MathUtils.degToRad(-20); // Target pitch angle of -20 degrees
+    // Assuming initialYaw is the camera's current yaw angle
+    // and finalYaw is the desired yaw angle at the end of the animation
+    const initialYaw = THREE.MathUtils.degToRad(180);
+    const finalYaw = THREE.MathUtils.degToRad(-20);
+
+    // Object to track the progress of the path animation and yaw rotation
+    const animationProgress = { path: 0, yaw: initialYaw };
 
     gsap.timeline({
         onStart: () => {
@@ -50,35 +53,29 @@ export default class CameraAnimations{
             console.log("Camera animation started");
         },
         onComplete: () => {
-            this.camera.rotation.x = targetPitch;
+            this.experience.controls.currentRotationY = finalYaw;
             this.eventEmitter.trigger('controls:enable');
             console.log("Camera animation complete");
         },
         ease: "power2.out",
     })
-    .to(progress, {
-        value: 1,
-        duration: duration,
+    .to(animationProgress, {
+        path: 1,
+        yaw: finalYaw,
+        duration: 8, // Duration in seconds
         onUpdate: () => {
-            console.log("Camera animation progress:", progress.value);
-            
-            // Update camera position
-            const point = this.path.getPointAt(progress.value);
+            // Update camera position along the path
+            const point = this.path.getPointAt(animationProgress.path);
             this.camera.position.copy(point);
-            
-            // Optionally, look at a fixed point or adjust yaw here
+
+            // Apply the interpolated yaw rotation
+            this.camera.rotation.y = animationProgress.yaw;
+
+            // Optionally, update camera's pitch and roll or use lookAt here
         },
-    }, '0')
-    .to(pitch, {
-        angle: targetPitch,
-        duration: duration,
-        onUpdate: () => {
-            // Directly apply the animated pitch to the camera's rotation
-            this.camera.rotation.order = 'YXZ'; // Ensure correct rotation order
-            this.camera.rotation.x = pitch.angle;
-        },
-    }, '0');
+    });
 }
+
 
 }
 
