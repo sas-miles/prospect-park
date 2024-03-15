@@ -73,7 +73,7 @@ void main() {
     finalColor = mix(finalColor, vignetteColor, 1.0 - vignetteAmount);
 
     // Create a mask to apply the blur outside the vignette area
-    float blurMask = smoothstep(vignetteRadius, vignetteRadius + 0.1, distanceFromCenter);
+    float blurMask = smoothstep(vignetteRadius, vignetteRadius + 1.0, distanceFromCenter);
 
     // Apply the blur effect based on the blur mask
     vec3 blurredColor = gaussianBlur(tDiffuse, vUv, blurStrength, 0.01);

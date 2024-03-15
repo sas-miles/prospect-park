@@ -46,8 +46,8 @@ export default class PostProcessing {
                 tDiffuse: { value: null },
                 noiseIntensity: { value: 0.0 },
                 vignetteColor: { value: new THREE.Vector3(0.9, 0.9, 0.9) },
-                blurStrength: { value: 0.1 },
-                vignetteRadius: { value: 0.8 }
+                blurStrength: { value: 0.2 },
+                vignetteRadius: { value: 0.9 }
             },
             vertexShader: vignetteVertexShader,
             fragmentShader: vignetteFragmentShader
@@ -69,7 +69,7 @@ export default class PostProcessing {
     addPasses() {
         this.effectComposer.addPass(this.renderPass)
         this.effectComposer.addPass(this.bloom)
-        this.effectComposer.addPass(this.vignetteShader)
+        // this.effectComposer.addPass(this.vignetteShader)
         this.effectComposer.addPass(this.gamma)
         
     }
