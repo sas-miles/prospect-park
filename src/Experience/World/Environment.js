@@ -55,8 +55,8 @@ export default class Environment{
         this.sunLight.shadow.normalBias = 0.2
         this.sunLight.shadow.bias = -.0001
         this.sunLight.position.set(20, 40, 0)
-        this.sunlightHelper = new THREE.DirectionalLightHelper(this.sunLight, 0.2)
-        this.scene.add(this.sunLight, this.sunlightHelper)
+        // this.sunlightHelper = new THREE.DirectionalLightHelper(this.sunLight, 0.2)
+        this.scene.add(this.sunLight)
 
         //Debug
         if(this.debug.active){
@@ -103,7 +103,7 @@ export default class Environment{
         }
 
         this.environmentMap.updateMaterial()
-        this.scene.background = new THREE.Color(0xeef2ff);
+        this.scene.background = new THREE.Color(0xfefefe);
 
         //Debug
         if(this.debug.active){

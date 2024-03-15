@@ -16,7 +16,7 @@ export default class Floor {
     }
 
     setGeometry(){
-        this.geometry = new THREE.CircleGeometry(5,64)
+        this.geometry = new THREE.PlaneGeometry(300, 300, 1, 1)
     }
 
     setTextures(){
@@ -35,8 +35,7 @@ export default class Floor {
 
     setMaterial(){
         this.material = new THREE.MeshStandardMaterial({
-            map: this.textures.color,
-            normalMap: this.textures.normal
+            color: 0xE2E2E2,
         })
     }
 
