@@ -47,7 +47,6 @@ export default class Car {
 
     animateAlongPath() {
         if (!this.path) {
-            console.error("Path for animation is not set.");
             return;
         }
     
@@ -64,8 +63,6 @@ export default class Car {
     
                 // Update the model's position
                 this.model.position.copy(point);
-
-                console.log('Model position:', this.model.position); // Add this line
 
             }
         })

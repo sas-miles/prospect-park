@@ -45,7 +45,9 @@ export default class PostProcessing {
             uniforms: {
                 tDiffuse: { value: null },
                 noiseIntensity: { value: 0.0 },
-                vignetteColor: { value: new THREE.Vector3(0.7, 0.7, 0.7) },
+                vignetteColor: { value: new THREE.Vector3(0.9, 0.9, 0.9) },
+                blurStrength: { value: 0.1 },
+                vignetteRadius: { value: 0.8 }
             },
             vertexShader: vignetteVertexShader,
             fragmentShader: vignetteFragmentShader

@@ -53,7 +53,7 @@ export default [
     {
         name: 'carPath',
         type: 'file',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track.json'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track2.json'
     },
 
     {
