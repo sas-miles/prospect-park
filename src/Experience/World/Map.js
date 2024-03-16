@@ -1,39 +1,33 @@
-import * as THREE from 'three';
-import Experience from '../Experience.js';
+import * as THREE from "three";
+import Experience from "../Experience.js";
 
 export default class Map {
-    constructor() {
-        this.experience = new Experience();
-        this.scene = this.experience.scene;
-        this.resources = this.experience.resources;
-        this.time = this.experience.time;
-        this.debug = this.experience.debug;
+  constructor() {
+    this.experience = new Experience();
+    this.scene = this.experience.scene;
+    this.resources = this.experience.resources;
+    this.time = this.experience.time;
+    this.debug = this.experience.debug;
 
-        if(this.debug.active){
-            this.debugFolder = this.debug.gui.addFolder('Map');
-        }
+    // if(this.debug.active){
+    //     this.debugFolder = this.debug.gui.addFolder('Map');
+    // }
 
-        this.resource = this.resources.items.map;
-        this.setModel();
-    }
+    this.resource = this.resources.items.map;
+    this.setModel();
 
-    setModel() {
-        this.model = this.resource.scene;
-        this.scene.add(this.model);
+    this.pointsofInterest = [];
+  }
 
-         //this.model.rotation.z = (-.2 * Math.PI) / 180;
+  setModel() {
+    this.model = this.resource.scene;
+    this.scene.add(this.model);
 
-        this.model.traverse((child) => {
-            if(child instanceof THREE.Mesh){
-                child.castShadow = true;
-                child.receiveShadow = true;
-            }
-        });
-    }
-
-    
-    
-
-    update() {
-    }
+    this.model.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }
 }

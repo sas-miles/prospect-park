@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import Experience from './Experience';
-import EventEmitter from './Utils/EventEmitter';
+import * as THREE from "three";
+import Experience from "./Experience";
+import EventEmitter from "./Utils/EventEmitter";
 
 export default class Controls {
   constructor() {
@@ -8,7 +8,7 @@ export default class Controls {
     this.sizes = this.experience.sizes;
     this.time = this.experience.time;
     this.renderer = this.experience.renderer.instance;
-    this.canvas = this.experience.canvas
+    this.canvas = this.experience.canvas;
     this.camera = this.experience.camera.instance;
 
     // Define variables here
@@ -28,7 +28,9 @@ export default class Controls {
     this.fixedPitch = THREE.MathUtils.degToRad(-20);
 
     // Retrieve the forward direction of the camera in world space
-    this.forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.camera.quaternion);
+    this.forward = new THREE.Vector3(0, 0, -1).applyQuaternion(
+      this.camera.quaternion
+    );
 
     this.normalize();
 
@@ -38,24 +40,23 @@ export default class Controls {
       minY: 0,
       maxY: 50,
       minZ: -40,
-      maxZ: 100
-    }
+      maxZ: 100,
+    };
 
     this.setControls();
 
-    this.experience.eventEmitter.on('controls:disable', () => {
+    this.experience.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
-      console.log('Controls: Received disable event');
+      // console.log('Controls: Received disable event');
     });
 
-    this.experience.eventEmitter.on('controls:enable', () => {
+    this.experience.eventEmitter.on("controls:enable", () => {
       this.isAnimationActive = false;
-      console.log('Controls: Received enable event');
+      // console.log('Controls: Received enable event');
     });
   }
 
   normalize() {
-    
     // Ignore the Y component by setting it to 0
     this.forward.y = 0;
 
@@ -91,27 +92,26 @@ export default class Controls {
       }
     };
 
-    this.renderer.domElement.addEventListener('mousedown', (event) => {
-      if (event.target.tagName.toLowerCase() === 'a') {
+    this.renderer.domElement.addEventListener("mousedown", (event) => {
+      if (event.target.tagName.toLowerCase() === "a") {
         return;
       }
       handleMouseDown(event.clientX, event.clientY);
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener("mouseup", () => {
       this.isDragging = false;
     });
 
-    this.renderer.domElement.addEventListener('mousemove', (event) => {
+    this.renderer.domElement.addEventListener("mousemove", (event) => {
       handleMouseMove(event.clientX, event.clientY);
     });
-    
 
     // Touch events
     this.renderer.domElement.addEventListener(
-      'touchstart',
+      "touchstart",
       (event) => {
-        if (event.target.tagName.toLowerCase() === 'a') {
+        if (event.target.tagName.toLowerCase() === "a") {
           return;
         }
         // Prevent the window from scrolling
@@ -124,7 +124,7 @@ export default class Controls {
     );
 
     this.renderer.domElement.addEventListener(
-      'touchmove',
+      "touchmove",
       (event) => {
         // Prevent the window from scrolling
         event.preventDefault();
@@ -135,7 +135,7 @@ export default class Controls {
       { passive: false }
     );
 
-    window.addEventListener('touchend', () => {
+    window.addEventListener("touchend", () => {
       this.isDragging = false;
     });
   }
@@ -155,37 +155,46 @@ export default class Controls {
 
   update() {
     if (this.isAnimationActive) return;
-  
+
     // Ensure rotation order is correct for Euler manipulation
-    this.camera.rotation.order = 'YXZ';
-  
+    this.camera.rotation.order = "YXZ";
+
     // Smoothly interpolate the camera's yaw towards the target rotation
     // Calculate the difference between the current yaw and the target yaw
     const currentYaw = this.camera.rotation.y;
     const deltaYaw = this.currentRotationY - currentYaw;
     // Apply damping to the yaw difference and update the current yaw
     this.camera.rotation.y += deltaYaw * this.damping;
-  
+
     // Fix the pitch angle
     this.camera.rotation.x = this.fixedPitch;
-  
+
     // Update forward direction based on the camera's new orientation
     this.forward.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
     this.normalize();
-  
+
     // Calculate and apply movement
-    const movementAmount = this.forward.multiplyScalar(this.currentTargetPositionZ);
+    const movementAmount = this.forward.multiplyScalar(
+      this.currentTargetPositionZ
+    );
     this.camera.position.add(movementAmount);
-  
+
     // Damp movement when not dragging
     if (!this.isDragging) {
       this.currentTargetPositionZ *= 1 - this.damping;
     }
 
-    this.camera.position.x = Math.max(this.boundaries.minX, Math.min(this.boundaries.maxX, this.camera.position.x));
-    this.camera.position.y = Math.max(this.boundaries.minY, Math.min(this.boundaries.maxY, this.camera.position.y));
-    this.camera.position.z = Math.max(this.boundaries.minZ, Math.min(this.boundaries.maxZ, this.camera.position.z));
+    this.camera.position.x = Math.max(
+      this.boundaries.minX,
+      Math.min(this.boundaries.maxX, this.camera.position.x)
+    );
+    this.camera.position.y = Math.max(
+      this.boundaries.minY,
+      Math.min(this.boundaries.maxY, this.camera.position.y)
+    );
+    this.camera.position.z = Math.max(
+      this.boundaries.minZ,
+      Math.min(this.boundaries.maxZ, this.camera.position.z)
+    );
   }
-  
-  
 }

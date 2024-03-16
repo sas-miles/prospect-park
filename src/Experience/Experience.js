@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import Sizes from './Utils/Sizes.js'
 import Time from './Utils/Time.js'
 import EventEmitter from './Utils/EventEmitter.js'
-import { GridHelper } from 'three'
 
 import Camera from './Camera.js'
 import Renderer from './Renderer.js'
@@ -11,7 +10,7 @@ import Resources from './Utils/Resources.js'
 import Debug from './Utils/Debug.js'
 import Controls from './Controls.js'
 import PostProcessing from './PostProcessing.js'
-// import Interface from './Interface.js'
+import Interface from './Interface.js'
 
 
 import sources from './sources.js'
@@ -40,11 +39,13 @@ export default class Experience{
         this.world = new World()
         this.eventEmitter = new EventEmitter()
         this.postProcessing = new PostProcessing()
-        // this.interface = new Interface()
+        
         
         this.controls = new Controls()
         
         this.world.eventEmitter.on('ready', () => {
+            this.interface = new Interface()
+            
         });
 
         //Sizes Resize Event
@@ -61,6 +62,7 @@ export default class Experience{
 
     resize(){
         this.camera.resize()
+        this.interface.resize()
         this.renderer.resize()
         this.postProcessing.resize()
     }
@@ -72,6 +74,10 @@ export default class Experience{
         this.postProcessing.update();
         this.world.update();
         this.debug.update();
+
+        if(this.interface){
+            this.interface.update()
+        }
 
       }
 
