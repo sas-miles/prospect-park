@@ -42,7 +42,7 @@ export default class PostProcessing {
         noiseIntensity: { value: 0.0 },
         vignetteColor: { value: new THREE.Vector3(0.9, 0.9, 0.9) },
         blurStrength: { value: 0.2 },
-        vignetteRadius: { value: 1.1 },
+        vignetteRadius: { value: 1.0 },
       },
       vertexShader: vignetteVertexShader,
       fragmentShader: vignetteFragmentShader,
