@@ -15,6 +15,40 @@ export default class PointsAnimation {
 
     this.initialCameraPosition = null;
     this.initialCameraRotation = null;
+
+    this.pointsItem = document.querySelectorAll(".points-of-interest_item");
+    this.labelContainers = document.querySelectorAll(".label-container");
+    this.markerContent = document.querySelectorAll(".marker-content_item");
+
+    this.eventEmitter.on("controls:disable", () => {
+      this.isAnimationActive = true;
+      console.log("Points: Received disable event");
+    });
+
+    this.eventEmitter.on("controls:enable", () => {
+      this.isAnimationActive = false;
+      this.introAnimation();
+    });
+  }
+
+  introAnimation() {
+    gsap.set(this.pointsItem, { display: "block" });
+
+    gsap
+      .timeline()
+      .to(
+        this.spheres.map((sphere) => sphere.material),
+        {
+          duration: 0.5,
+          opacity: 1,
+          ease: "power3.in",
+        }
+      )
+      .to(this.labelContainers, {
+        duration: 0.5,
+        opacity: 1,
+        ease: "power1.out",
+      });
   }
 
   animateToTarget(name, targetDiv, camX, camY, camZ) {
@@ -43,7 +77,12 @@ export default class PointsAnimation {
               console.log("POI Camera animation started");
               this.spheres.forEach((sphere) => {
                 if (sphere.name === name) {
-                  sphere.visible = false;
+                  gsap.timeline().to(
+                    this.spheres.map((sphere) => sphere.material),
+                    {
+                      opacity: 0,
+                    }
+                  );
                 }
               });
 
@@ -114,7 +153,13 @@ export default class PointsAnimation {
   closeModal(name) {
     this.experience.interface.spheres.forEach((sphere) => {
       if (sphere.name === name) {
-        sphere.visible = true;
+        gsap.timeline().to(
+          this.spheres.map((sphere) => sphere.material),
+          {
+            duration: 1,
+            opacity: 1,
+          }
+        );
       }
     });
 
@@ -125,21 +170,19 @@ export default class PointsAnimation {
             .querySelector(`[data-label="${name}"]`)
             .getAttribute("labelY-offset")
         ) || 0;
-      gsap
-        .timeline()
-        .to(this.experience.interface.labels[name].position, {
-          duration: 1,
-          ease: "power1.out",
-        })
-        .to(this.experience.interface.labels[name].position, {
-          duration: 1,
-          ease: "power1.out",
-        })
-        .to(this.experience.interface.labels[name].position, {
-          duration: 1,
+
+      const label = this.experience.interface.labels[name];
+
+      // Create a timeline for the animation
+      const tl = gsap.timeline().to(
+        label.position,
+        {
           y: yOffset + 2.0,
+          duration: 0.5,
           ease: "power1.out",
-        });
+        },
+        0
+      );
     }
   }
 }

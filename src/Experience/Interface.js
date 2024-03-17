@@ -67,7 +67,11 @@ export default class Interface {
 
   createSphere(x, y, z, camX, camY, camZ, name) {
     const geo = new THREE.SphereGeometry(0.5);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      transparent: true,
+      opacity: 0,
+    });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(x, y, z);
     mesh.name = name;
