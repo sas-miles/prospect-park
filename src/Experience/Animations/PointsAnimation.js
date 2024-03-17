@@ -117,10 +117,16 @@ export default class PointsAnimation {
               y: targetRotation.y,
               z: targetRotation.z,
               w: targetRotation.w,
-              ease: "power1.out", // Easing function
+              ease: "power1.out",
             },
             0
-          );
+          )
+          .to(this.markerContent, {
+            duration: 0.5,
+            opacity: 1,
+            x: "0vw",
+            ease: "power1.out",
+          });
 
         targetDiv.classList.add("is-active");
       }
@@ -129,39 +135,59 @@ export default class PointsAnimation {
 
   resetAnimation() {
     if (this.initialCameraPosition && this.initialCameraRotation) {
+      this.closeModal(name);
+
       gsap.to(this.camera.position, {
-        duration: 1,
+        duration: 2,
         x: this.initialCameraPosition.x,
         y: this.initialCameraPosition.y,
         z: this.initialCameraPosition.z,
         onUpdate: () => {
           this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         },
-        ease: "power1.out",
+        ease: "power1.inOut",
       });
-
       gsap.to(this.camera.rotation, {
         duration: 2,
         x: this.initialCameraRotation.x,
         y: this.initialCameraRotation.y,
         z: this.initialCameraRotation.z,
-        ease: "power1.out",
+        ease: "power1.inOut",
       });
     }
   }
 
   closeModal(name) {
+    const animations = [];
+
     this.experience.interface.spheres.forEach((sphere) => {
       if (sphere.name === name) {
-        gsap.timeline().to(
-          this.spheres.map((sphere) => sphere.material),
-          {
-            duration: 1,
-            opacity: 1,
-          }
-        );
+        const animation = new Promise((resolve) => {
+          gsap.timeline().to(
+            this.spheres.map((sphere) => sphere.material),
+            {
+              duration: 1,
+              opacity: 1,
+              onComplete: resolve,
+            }
+          );
+        });
+
+        animations.push(animation);
       }
     });
+
+    const markerContentAnimation = new Promise((resolve) => {
+      gsap.timeline().to(this.markerContent, {
+        duration: 0.5,
+        opacity: 0,
+        x: "40vw",
+        ease: "power1.out",
+        onComplete: resolve,
+      });
+    });
+
+    animations.push(markerContentAnimation);
 
     if (this.experience.interface.labels[name]) {
       const yOffset =
@@ -173,16 +199,23 @@ export default class PointsAnimation {
 
       const label = this.experience.interface.labels[name];
 
-      // Create a timeline for the animation
-      const tl = gsap.timeline().to(
-        label.position,
-        {
-          y: yOffset + 2.0,
-          duration: 0.5,
-          ease: "power1.out",
-        },
-        0
-      );
+      const labelAnimation = new Promise((resolve) => {
+        gsap.timeline().to(
+          label.position,
+          {
+            y: yOffset + 2.0,
+            duration: 0.5,
+            ease: "power1.out",
+            onComplete: resolve,
+          },
+          0
+        );
+      });
+
+      animations.push(labelAnimation);
     }
+
+    // Return a Promise that resolves when all animations are complete
+    return Promise.all(animations);
   }
 }

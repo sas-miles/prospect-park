@@ -5,6 +5,7 @@ import {
 } from "three/addons/renderers/CSS2DRenderer.js";
 import Experience from "./Experience.js";
 import PointsAnimation from "./Animations/PointsAnimation.js";
+import Map from "./World/Map.js";
 
 export default class Interface {
   constructor() {
@@ -14,6 +15,11 @@ export default class Interface {
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
     this.camera = this.experience.camera.instance;
+
+    this.map = new Map();
+    this.boathouse = this.map.getChildren(["Boathouse"]).Boathouse;
+    this.carousel = this.map.getChildren(["Carasouel005"]).Carasouel005;
+    this.picnic = this.map.getChildren(["picnic002"]).picnic002;
 
     this.eventEmitter = this.experience.eventEmitter;
 
@@ -29,6 +35,8 @@ export default class Interface {
     this.group = new THREE.Group();
     this.experience.scene.add(this.group);
 
+    this.group.add(this.boathouse, this.carousel, this.picnic);
+
     this.spheres = [];
     this.labels = {};
 
@@ -36,6 +44,17 @@ export default class Interface {
 
     this.mousePosition = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
+
+    // Define the materials you want to apply to different meshes
+    this.materials = {
+      Boathouse: new THREE.MeshStandardMaterial({
+        color: 0xe5e1e3,
+        roughness: 1.0,
+        metalness: 0.8,
+      }),
+      Carasouel005: new THREE.MeshLambertMaterial({ color: 0x00ff00 }), // Green material for Carasouel005
+      picnic002: new THREE.MeshPhongMaterial({ color: 0x0000ff }), // Blue material for picnic002
+    };
 
     this.createSpheresFromDOM();
     this.setRaycaster();
@@ -102,6 +121,46 @@ export default class Interface {
   }
 
   setRaycaster() {
+    const hoverRaycast = (event) => {
+      if (event.target.tagName.toLowerCase() === "a") {
+        return;
+      }
+
+      let clientX, clientY;
+
+      if (event.type.includes("touch")) {
+        const touch = event.touches[0] || event.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+      }
+
+      this.mousePosition.x = (clientX / this.sizes.width) * 2 - 1;
+      this.mousePosition.y = -(clientY / this.sizes.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(
+        this.mousePosition,
+        this.experience.camera.instance
+      );
+
+      const intersects = this.raycaster.intersectObjects(this.group.children);
+      if (intersects.length > 0) {
+        const sphere = intersects[0].object;
+        const name = sphere.name;
+
+        if (name === "Boathouse") {
+          this.boathouse.material = new THREE.MeshStandardMaterial({
+            color: 0x00ff00,
+          }); // Change to green
+        }
+      } else {
+        // If no intersection is found, change the boathouse material back to the original
+        this.boathouse.material = this.materials.Boathouse;
+      }
+    };
+
     const raycast = (event) => {
       if (event.target.tagName.toLowerCase() === "a") {
         return;
@@ -130,6 +189,7 @@ export default class Interface {
       if (intersects.length > 0) {
         const sphere = intersects[0].object;
         const name = sphere.name;
+
         const { camX, camY, camZ } = sphere.userData;
         const targetDiv = document.querySelector(`div[data-content="${name}"]`);
         if (targetDiv) {
@@ -144,13 +204,14 @@ export default class Interface {
       }
     };
 
+    window.addEventListener("mousemove", hoverRaycast);
     window.addEventListener("click", raycast);
     window.addEventListener("touchend", raycast, { passive: false });
   }
 
-  closeModal() {
+  async closeModal() {
     document.querySelectorAll(".marker-close").forEach((closeButton) => {
-      closeButton.addEventListener("click", (event) => {
+      closeButton.addEventListener("click", async (event) => {
         event.stopPropagation();
 
         const modal = event.target.closest("div[data-content]");
@@ -158,21 +219,25 @@ export default class Interface {
 
         if (name) {
           this.pointsAnimation.resetAnimation();
-          this.pointsAnimation.closeModal(name);
+          // Wait for all animations to complete before hiding the modal
+          await this.pointsAnimation.closeModal(name);
         }
 
         // Close all modals
         document
           .querySelectorAll("div[data-content].is-active")
           .forEach((modal) => {
-            modal.classList.remove("is-active");
-            this.eventEmitter.trigger("controls:enable");
+            setTimeout(() => {
+              modal.classList.remove("is-active");
+              console.log("Modal closed");
+              this.eventEmitter.trigger("controls:enable");
+            }, 1000);
           });
       });
     });
   }
 
-  reset() {
+  async reset() {
     // Remove spheres from the Three.js scene and dispose of their resources
     this.spheres.forEach((sphere) => {
       this.group.remove(sphere);
