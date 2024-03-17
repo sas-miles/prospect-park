@@ -89,7 +89,7 @@ export default class PointsAnimation {
               if (this.labels[name]) {
                 gsap.to(this.labels[name].position, {
                   duration: 1,
-                  y: -2.5,
+                  y: -0.5,
                   ease: "power1.out",
                 });
               }
