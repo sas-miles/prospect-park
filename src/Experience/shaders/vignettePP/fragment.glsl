@@ -40,13 +40,22 @@ vec3 gaussianBlur(sampler2D tex, vec2 uv, float radius, float strength) {
 
 void main() {
     vec2 coords = fract(vUv * vec2(1.0, 1.0));
-
-    // Calculate the vignette effect
+    
+    // Calculate the vignette effect with softened edges
     vec2 vignetteCoords = vUv * 2.0 - 1.0;
     float distanceFromCenter = length(vignetteCoords);
-    float vignetteAmount = smoothstep(vignetteRadius, 1.0, distanceFromCenter);
+    
+    float innerEdgeSoftness = 0.4; // Control the softness of the vignette's inner edge
+    
+    // Adjust the start and end points for a softer transition
+    float outerEdgeStart = vignetteRadius * innerEdgeSoftness * vignetteRadius;
+    // float outerEdgeEnd = vignetteRadius + innerEdgeSoftness * (1.0 + vignetteRadius);
+    float outerEdgeEnd = 2.0;
+    float vignetteAmount = smoothstep(outerEdgeStart, outerEdgeEnd, distanceFromCenter);
     vignetteAmount = 1.0 - vignetteAmount; // Invert the vignette amount
+    vignetteAmount = pow(vignetteAmount, 1.1); // Apply a power function to control the vignette amount
 
+    
     // Original color
     vec3 color = texture2D(tDiffuse, vUv).xyz;
 
