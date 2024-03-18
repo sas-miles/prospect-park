@@ -27,7 +27,13 @@ export default [
   {
     name: "map",
     type: "gltfModel",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-test6.glb",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-map.glb",
+  },
+
+  {
+    name: "mapPOI",
+    type: "gltfModel",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-map-POI.glb",
   },
 
   {
@@ -76,5 +82,11 @@ export default [
     name: "boatPath",
     type: "file",
     path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/boat-track.json",
+  },
+
+  {
+    name: "Pin",
+    type: "gltfModel",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/pin.glb",
   },
 ];

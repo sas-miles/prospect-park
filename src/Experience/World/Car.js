@@ -53,6 +53,7 @@ export default class Car {
     );
 
     this.path = new THREE.CatmullRomCurve3(points);
+    this.path.closed = true
     // Create a geometry from the points
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
