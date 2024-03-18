@@ -32,7 +32,14 @@ export default class PointsAnimation {
   }
 
   introAnimation() {
-    gsap.set(this.pointsItem, { display: "block" });
+    const labelVisibility = document.querySelectorAll(".label-visibility");
+
+    // Add a class to each labelVisibility element
+    labelVisibility.forEach((label) => {
+      label.classList.add("is-active-block");
+    });
+
+    console.log("Points: introAnimation", labelVisibility);
 
     gsap
       .timeline()
@@ -44,14 +51,15 @@ export default class PointsAnimation {
           ease: "power3.in",
         }
       )
-      .to(this.labelContainers, {
+      .to(labelVisibility, {
         duration: 0.5,
         opacity: 1,
-        ease: "power1.out",
+        y: 0,
+        ease: "power1.in",
       });
   }
 
-  animateToTarget(name, pointsTitle, targetDiv, camX, camY, camZ) {
+  animateToTarget(targetDiv, camX, camY, camZ) {
     const intersects = this.experience.interface.raycaster.intersectObjects(
       this.experience.interface.group.children
     );

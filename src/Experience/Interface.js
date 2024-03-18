@@ -25,8 +25,6 @@ export default class Interface {
 
     this.controls = this.experience.controls;
 
-    //To-do implement POI child meshes from Map.js
-
     //Debug
     if (this.debug.active) {
       this.debugFolder = this.debug.gui.addFolder("Markers");
@@ -100,16 +98,19 @@ export default class Interface {
 
   setLabels() {
     this.group.children.forEach((sphere) => {
-      const div = document.querySelector(`[data-label="${sphere.name}"]`);
+      const sphereContainer = document.querySelector(
+        `.sphere-container[data-label="${sphere.name}"]`
+      );
 
-      if (div) {
-        const yOffset = parseFloat(div.getAttribute("labelY-offset")) || 0;
-        const label = new CSS2DObject(div);
-        label.position.set(0, yOffset + 2.0, 0);
-
+      if (sphereContainer) {
+        const labelTarget = document.querySelector(
+          `.label-target[data-label="${sphere.name}"]`
+        );
+        const label = new CSS2DObject(labelTarget);
+        label.position.set(0, 2.0, 0);
         sphere.add(label); // Attach the label to the sphere
+
         this.labels[sphere.name] = label;
-        console.log(this.labels);
       }
     });
   }
