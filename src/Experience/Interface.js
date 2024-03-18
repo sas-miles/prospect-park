@@ -97,7 +97,13 @@ export default class Interface {
   }
 
   setLabels() {
+    if (!this.pointsAnimation) {
+      console.error("pointsAnimation is not defined");
+      return;
+    }
+
     this.group.children.forEach((sphere) => {
+      const { camX, camY, camZ } = sphere.userData;
       const sphereContainer = document.querySelector(
         `.sphere-container[data-label="${sphere.name}"]`
       );
@@ -106,11 +112,35 @@ export default class Interface {
         const labelTarget = document.querySelector(
           `.label-target[data-label="${sphere.name}"]`
         );
-        const label = new CSS2DObject(labelTarget);
-        label.position.set(0, 2.0, 0);
-        sphere.add(label); // Attach the label to the sphere
 
-        this.labels[sphere.name] = label;
+        if (labelTarget) {
+          const label = new CSS2DObject(labelTarget);
+          label.position.set(0, 2.0, 0);
+          sphere.add(label); // Attach the label to the sphere
+
+          this.labels[sphere.name] = label;
+          console.log("set label", this.labels);
+
+          // Add a click event listener to the labelTarget div
+          labelTarget.addEventListener("click", (event) => {
+            console.log(`Clicked on label for sphere: ${sphere.name}`, event);
+
+            const name = sphere.name;
+
+            const targetDiv = document.querySelector(
+              `div[data-content="${name}"]`
+            );
+            if (targetDiv) {
+              this.pointsAnimation.animateToTarget(
+                name,
+                targetDiv,
+                camX,
+                camY,
+                camZ
+              );
+            }
+          });
+        }
       }
     });
   }
@@ -184,11 +214,12 @@ export default class Interface {
         const name = sphere.name;
 
         const { camX, camY, camZ } = sphere.userData;
-        const targetDiv = document.querySelector(`div[data-content="${name}"]`);
+        const targetDiv = document.querySelector(
+          `.points-of-interest_target[data-content="${name}"]`
+        );
         if (targetDiv) {
           this.pointsAnimation.animateToTarget(
             name,
-            pointsTitle,
             targetDiv,
             camX,
             camY,
@@ -203,33 +234,25 @@ export default class Interface {
     window.addEventListener("touchend", raycast, { passive: false });
   }
 
-  async closeModal() {
+  closeModal() {
     document.querySelectorAll(".marker-close").forEach((closeButton) => {
       closeButton.addEventListener("click", async (event) => {
         event.stopPropagation();
+        const sphereContainer = document.querySelector(".sphere-container");
+        const name = sphereContainer.getAttribute("data-label");
 
-        const modal = event.target.closest("div[data-content]");
-        const name = modal ? modal.getAttribute("data-content") : null;
+        const targetDiv = document.querySelector(
+          `.points-of-interest_target[data-content="${name}"]`
+        );
 
-        if (name) {
-          const pointsTitle = document.querySelector(
-            `.points-title[data-name="${name}"]`
-          );
+        if (targetDiv) {
           this.pointsAnimation.resetAnimation();
-          // Wait for all animations to complete before hiding the modal
-          await this.pointsAnimation.closeModal(name, pointsTitle);
-        }
 
-        // Close all modals
-        document
-          .querySelectorAll("div[data-content].is-active")
-          .forEach((modal) => {
-            setTimeout(() => {
-              modal.classList.remove("is-active");
-              console.log("Modal closed");
-              this.eventEmitter.trigger("controls:enable");
-            }, 1000);
-          });
+          setTimeout(() => {
+            this.pointsAnimation.closeModal(name, targetDiv);
+            this.eventEmitter.trigger("controls:enable");
+          }, 2000);
+        }
       });
     });
   }

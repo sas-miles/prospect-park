@@ -16,10 +16,6 @@ export default class PointsAnimation {
     this.initialCameraPosition = null;
     this.initialCameraRotation = null;
 
-    this.pointsItem = document.querySelectorAll(".points-of-interest_item");
-    this.labelContainers = document.querySelectorAll(".label-container");
-    this.markerContent = document.querySelectorAll(".marker-content_item");
-
     this.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
       console.log("Points: Received disable event");
@@ -59,31 +55,51 @@ export default class PointsAnimation {
       });
   }
 
-  animateToTarget(targetDiv, camX, camY, camZ) {
+  animateToTarget(name, targetDiv, camX, camY, camZ) {
+    this.name = name;
+    this.targetDiv = targetDiv;
     const intersects = this.experience.interface.raycaster.intersectObjects(
       this.experience.interface.group.children
     );
 
     if (intersects.length > 0) {
       const name = intersects[0].object.name;
-      console.log(name);
+
       if (targetDiv) {
         this.eventEmitter.trigger("controls:disable");
 
         this.initialCameraPosition = this.camera.position.clone();
         this.initialCameraRotation = this.camera.rotation.clone();
 
-        const pointsTitle = targetDiv.querySelectorAll(".points-title");
-        const markerContent = targetDiv.querySelectorAll(
-          ".marker-content_item"
+        const labelVisibility = document.querySelectorAll(".label-visibility");
+
+        // Label Visibility - Hide for all
+        labelVisibility.forEach((label) => {
+          label.classList.remove("is-active-block");
+        });
+
+        // Points Modal Visibility - Set up to show
+        const pointsModal = targetDiv.querySelector(
+          ".point-content-modal_visibility"
         );
-        const labelContainer = targetDiv.querySelectorAll(".label-container");
+        pointsModal.classList.add("is-modal-visibility");
+
+        // Points Title Visibility - Set up to show
+        const pointsTitle = targetDiv.querySelector(".points-title_visibility");
+        pointsTitle.classList.add("is-active-block");
+
+        // Main Content Visibility - Set up to show
+        const pointMainVisibility = targetDiv.querySelector(
+          ".point-content-main_visibility"
+        );
+        pointMainVisibility.classList.add("is-active-block");
 
         // Create a new quaternion for the target rotation
         let targetRotation = new THREE.Quaternion();
         targetRotation.setFromEuler(
           new THREE.Euler(0, THREE.MathUtils.degToRad(49), 0)
         );
+
         gsap
           .timeline({
             onStart: () => {
@@ -110,16 +126,16 @@ export default class PointsAnimation {
                   0
                 );
               }
-              gsap.to(
-                labelContainer,
-                {
-                  opacity: 0,
-                },
-                0
-              );
+
+              gsap.set(pointMainVisibility, {
+                duration: 0,
+                opacity: 1,
+              });
+              gsap.set(pointsModal, { clearProps: "all" });
             },
             onComplete: () => {
               console.log("POI Camera animation complete");
+              console.log("Camera target", camX, camY, camZ);
             },
           })
           .to(
@@ -150,21 +166,19 @@ export default class PointsAnimation {
             opacity: 1,
             ease: "power1.out",
           })
-          .to(markerContent, {
+          .to(pointsModal, {
             duration: 0.5,
             opacity: 1,
-            x: "0vw",
+            right: "0vw",
             ease: "power1.out",
           });
-
-        markerContent.classList.add("is-active");
       }
     }
   }
 
   resetAnimation() {
     if (this.initialCameraPosition && this.initialCameraRotation) {
-      this.closeModal(name);
+      this.closeModal(this.name, this.targetDiv);
 
       gsap.to(this.camera.position, {
         duration: 2,
@@ -186,86 +200,79 @@ export default class PointsAnimation {
     }
   }
 
-  closeModal(name, pointsTitle, targetDiv, camX, camY, camZ) {
-    const animations = [];
-
+  closeModal(name, targetDiv) {
+    // Fade in spheres visibility if they were hidden
     this.experience.interface.spheres.forEach((sphere) => {
       if (sphere.name === name) {
-        const animation = new Promise((resolve) => {
-          gsap.timeline().to(
-            this.spheres.map((sphere) => sphere.material),
-            {
-              duration: 1,
-              opacity: 1,
-              onComplete: resolve,
-            }
-          );
-        });
-
-        animations.push(animation);
+        gsap.to(
+          this.spheres.map((sphere) => sphere.material),
+          {
+            duration: 1,
+            opacity: 1,
+          }
+        );
       }
     });
-    const markerContentAnimation = new Promise((resolve) => {
-      gsap
-        .timeline()
-        .to(
-          pointsTitle,
-          {
-            duration: 0.5,
-            opacity: 0,
-            ease: "power1.out",
-          },
-          0
-        )
-        .to(
-          this.markerContent,
-          {
-            duration: 0.5,
-            opacity: 0,
-            x: "40vw",
-            ease: "power1.out",
-            onComplete: resolve,
-          },
-          0
-        );
-    });
 
-    animations.push(markerContentAnimation);
+    // Select the elements with classes that were modified during the modal display
+    const pointsTitle = targetDiv.querySelector(".points-title_visibility");
+    const pointsModal = targetDiv.querySelector(
+      ".point-content-modal_visibility"
+    );
+    const pointMainVisibility = targetDiv.querySelector(
+      ".point-content-main_visibility"
+    );
+    const labelVisibility = document.querySelectorAll(".label-visibility");
 
-    if (this.experience.interface.labels[name]) {
-      const yOffset =
-        parseFloat(
-          document
-            .querySelector(`[data-label="${name}"]`)
-            .getAttribute("labelY-offset")
-        ) || 0;
+    // Fade out animations for modal elements
+    gsap
+      .timeline({
+        onComplete: () => {
+          // Once animation is complete, remove classes
+          pointsTitle.classList.remove("is-active-block");
+          pointsModal.classList.remove("is-modal-visibility");
+          pointMainVisibility.classList.remove("is-active-block");
 
-      const label = this.experience.interface.labels[name];
+          // Revert label visibility to its initial state
+          labelVisibility.forEach((label) =>
+            label.classList.add("is-active-block")
+          );
 
-      const labelAnimation = new Promise((resolve) => {
-        gsap
-          .timeline()
-          .to(
-            label.position,
-            {
-              y: yOffset + 2.0,
-              duration: 0.5,
-              ease: "power1.out",
-              onComplete: resolve,
-            },
-            0
-          )
-          .to(document.querySelector(".label-marker-heading"), {
-            opacity: 1,
-            duration: 0.5,
-            onComplete: resolve,
-          });
-      });
+          // Emit event to re-enable controls if they were disabled
+          this.eventEmitter.trigger("controls:enable");
+        },
+      })
+      .to(
+        pointsTitle,
+        {
+          duration: 0.5,
+          opacity: 0,
+          ease: "power1.out",
+        },
+        0
+      )
+      .to(
+        pointsModal,
+        {
+          duration: 0.5,
+          opacity: 0,
+          x: "40vw",
+          ease: "power1.out",
+        },
+        0
+      );
 
-      animations.push(labelAnimation);
+    // Reset label positions if they were modified
+    if (this.labels[name]) {
+      gsap.to(
+        this.labels[name].position,
+        {
+          duration: 1,
+          y: 2.0,
+          ease: "power1.out",
+        },
+        0
+      );
     }
-
-    // Return a Promise that resolves when all animations are complete
-    return Promise.all(animations);
   }
 }
