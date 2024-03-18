@@ -19,22 +19,29 @@ float random(vec2 co) {
 }
 
 
+
 // Gaussian blur function
-vec3 gaussianBlur(sampler2D tex, vec2 uv, float radius, float strength) {
+vec3 gaussianBlur(sampler2D tex, vec2 uv, float blurRadius, float strength) {
     vec4 color = vec4(0.0);
-    vec2 off1 = vec2(radius, radius);
-    vec2 off2 = vec2(-radius, radius);
-    vec2 off3 = vec2(radius, -radius);
-    vec2 off4 = vec2(-radius, -radius);
+    // Directly use blurRadius to adjust the offset distances
+    vec2 off1 = vec2(blurRadius, blurRadius);
+    vec2 off2 = vec2(-blurRadius, blurRadius);
+    vec2 off3 = vec2(blurRadius, -blurRadius);
+    vec2 off4 = vec2(-blurRadius, -blurRadius);
+
+    // Apply a base strength to all offsets to modulate the blur effect's intensity
+    float baseStrength = 0.1193 * strength;
+    float cornerStrength = 0.0484 * strength;
+
     color += texture2D(tex, uv) * 0.1962;
-    color += texture2D(tex, uv + off1 * strength) * 0.1193;
-    color += texture2D(tex, uv - off1 * strength) * 0.1193;
-    color += texture2D(tex, uv + off2 * strength) * 0.1193;
-    color += texture2D(tex, uv - off2 * strength) * 0.1193;
-    color += texture2D(tex, uv + off3 * strength) * 0.0484;
-    color += texture2D(tex, uv - off3 * strength) * 0.0484;
-    color += texture2D(tex, uv + off4 * strength) * 0.0484;
-    color += texture2D(tex, uv - off4 * strength) * 0.0484;
+    color += texture2D(tex, uv + off1) * baseStrength;
+    color += texture2D(tex, uv - off1) * baseStrength;
+    color += texture2D(tex, uv + off2) * baseStrength;
+    color += texture2D(tex, uv - off2) * baseStrength;
+    color += texture2D(tex, uv + off3) * cornerStrength;
+    color += texture2D(tex, uv - off3) * cornerStrength;
+    color += texture2D(tex, uv + off4) * cornerStrength;
+    color += texture2D(tex, uv - off4) * cornerStrength;
     return color.rgb;
 }
 
@@ -45,15 +52,17 @@ void main() {
     vec2 vignetteCoords = vUv * 2.0 - 1.0;
     float distanceFromCenter = length(vignetteCoords);
     
-    float innerEdgeSoftness = 0.4; // Control the softness of the vignette's inner edge
+    float innerEdgeSoftness = 1.1; // Control the softness of the vignette's inner edge
     
     // Adjust the start and end points for a softer transition
     float outerEdgeStart = vignetteRadius * innerEdgeSoftness * vignetteRadius;
+
     // float outerEdgeEnd = vignetteRadius + innerEdgeSoftness * (1.0 + vignetteRadius);
-    float outerEdgeEnd = 2.5;
+    float outerEdgeEnd = 1.5;
     float vignetteAmount = smoothstep(outerEdgeStart, outerEdgeEnd, distanceFromCenter);
     vignetteAmount = 1.0 - vignetteAmount; // Invert the vignette amount
-    vignetteAmount = pow(vignetteAmount, 0.6); // Apply a power function to control the vignette amount
+
+    
 
     
     // Original color
@@ -78,14 +87,21 @@ void main() {
     // Blend original color and RGB shift color based on edgeIntensity
     vec3 finalColor = mix(rgbShiftColor, color, vignetteAmount);
 
-    // Apply the vignette effect by darkening towards the edges
-    finalColor = mix(finalColor, vignetteColor, 1.0 - vignetteAmount);
+    // Apply the vignette effect with adjusted opacity
+    float vignetteOpacity = 0.3; // Adjust this value as needed
+    finalColor = mix(finalColor, vignetteColor, (1.0 - vignetteAmount) * vignetteOpacity);
 
     // Create a mask to apply the blur outside the vignette area
     float blurMask = smoothstep(vignetteRadius, vignetteRadius + 1.0, distanceFromCenter);
 
-    // Apply the blur effect based on the blur mask
-    vec3 blurredColor = gaussianBlur(tDiffuse, vUv, blurStrength, 0.01);
+    // Calculate dynamic blur strength here, after blurMask is defined
+    float dynamicBlurStrength = blurStrength * blurMask;
+
+
+    // Apply the blur effect based on the dynamic blur strength
+    vec3 blurredColor = gaussianBlur(tDiffuse, vUv, blurStrength, dynamicBlurStrength);
+
+
     finalColor = mix(finalColor, blurredColor, blurMask);
 
     // Generate and apply the film grain noise

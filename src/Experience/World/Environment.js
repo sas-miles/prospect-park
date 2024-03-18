@@ -8,7 +8,7 @@ export default class Environment {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.debug = this.experience.debug;
-    // this.fog = new THREE.FogExp2( 0xffffff, .004);
+    // this.fog = new THREE.FogExp2( 0xffffff, .002);
 
     // //Debug
     // if(this.debug.active){
@@ -104,7 +104,7 @@ export default class Environment {
     };
 
     this.environmentMap.updateMaterial();
-    this.scene.background = new THREE.Color(0xfefefe);
+    this.scene.background = new THREE.Color(0xffffff);
 
     // //Debug
     // if(this.debug.active){
