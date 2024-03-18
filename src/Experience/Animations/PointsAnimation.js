@@ -65,6 +65,12 @@ export default class PointsAnimation {
         this.initialCameraPosition = this.camera.position.clone();
         this.initialCameraRotation = this.camera.rotation.clone();
 
+        const pointsTitle = targetDiv.querySelectorAll(".points-title");
+        const markerContent = targetDiv.querySelectorAll(
+          ".marker-content_item"
+        );
+        const labelContainer = targetDiv.querySelectorAll(".label-container");
+
         // Create a new quaternion for the target rotation
         let targetRotation = new THREE.Quaternion();
         targetRotation.setFromEuler(
@@ -97,7 +103,7 @@ export default class PointsAnimation {
                 );
               }
               gsap.to(
-                document.querySelector(".label-marker-heading"),
+                labelContainer,
                 {
                   opacity: 0,
                 },
@@ -109,7 +115,7 @@ export default class PointsAnimation {
             },
           })
           .to(
-            this.experience.camera.instance.position,
+            this.camera.position,
             {
               duration: 1, // Animation duration in seconds
               x: camX,
@@ -136,14 +142,14 @@ export default class PointsAnimation {
             opacity: 1,
             ease: "power1.out",
           })
-          .to(this.markerContent, {
+          .to(markerContent, {
             duration: 0.5,
             opacity: 1,
             x: "0vw",
             ease: "power1.out",
           });
 
-        targetDiv.classList.add("is-active");
+        markerContent.classList.add("is-active");
       }
     }
   }

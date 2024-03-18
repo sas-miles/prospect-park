@@ -109,34 +109,7 @@ export default class Interface {
 
         sphere.add(label); // Attach the label to the sphere
         this.labels[sphere.name] = label;
-
-        // Find the .label-container within the label
-        const labelContainer = div.querySelector(".label-marker-heading");
-
-        if (labelContainer) {
-          // Add a click event listener to the .label-container
-          labelContainer.addEventListener("click", (event) => {
-            event.stopPropagation();
-
-            const { camX, camY, camZ } = sphere.userData;
-            const targetDiv = document.querySelector(
-              `div[data-content="${sphere.name}"]`
-            );
-            const pointsTitle = document.querySelector(
-              `.points-title[data-name="${sphere.name}"]`
-            );
-
-            console.log(this.pointsAnimation.animateToTarget);
-            this.pointsAnimation.animateToTarget(
-              sphere.name,
-              pointsTitle,
-              targetDiv,
-              camX,
-              camY,
-              camZ
-            );
-          });
-        }
+        console.log(this.labels);
       }
     });
   }
@@ -177,15 +150,6 @@ export default class Interface {
       if (intersects.length > 0) {
         const sphere = intersects[0].object;
         const name = sphere.name;
-
-        if (name === "Boathouse") {
-          this.boathouse.material = new THREE.MeshStandardMaterial({
-            color: 0x00ff00,
-          }); // Change to green
-        }
-      } else {
-        // If no intersection is found, change the boathouse material back to the original
-        this.boathouse.material = this.materials.Boathouse;
       }
     };
 
@@ -220,9 +184,6 @@ export default class Interface {
 
         const { camX, camY, camZ } = sphere.userData;
         const targetDiv = document.querySelector(`div[data-content="${name}"]`);
-        const pointsTitle = document.querySelector(
-          `.points-title[data-name="${name}"]`
-        );
         if (targetDiv) {
           this.pointsAnimation.animateToTarget(
             name,

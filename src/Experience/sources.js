@@ -27,7 +27,7 @@ export default [
   {
     name: "map",
     type: "gltfModel",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-test5.glb",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-test6.glb",
   },
 
   {
