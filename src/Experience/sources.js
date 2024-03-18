@@ -45,24 +45,36 @@ export default [
   {
     name: "car",
     type: "gltfModel",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car.glb",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car2.glb",
   },
 
   {
     name: "carPath",
     type: "file",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track2.json",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track3.json",
   },
 
   {
     name: "helicopter",
     type: "gltfModel",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/helicoptor.glb",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/helicopter2.glb",
   },
 
   {
     name: "heliPath",
     type: "file",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/heli-track.json",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/heli-track2.json",
+  },
+
+  {
+    name: "boat",
+    type: "gltfModel",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/boat.glb",
+  },
+
+  {
+    name: "boatPath",
+    type: "file",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/boat-track.json",
   },
 ];
