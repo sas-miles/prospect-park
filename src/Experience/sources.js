@@ -57,12 +57,12 @@ export default [
   {
     name: "helicopter",
     type: "gltfModel",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/helicoptor.glb",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/helicopter2.glb",
   },
 
   {
     name: "heliPath",
     type: "file",
-    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/heli-track.json",
+    path: "https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/heli-track2.json",
   },
 ];
