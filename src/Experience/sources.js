@@ -29,7 +29,7 @@ export default [
     {
         name: 'map',
         type: 'gltfModel',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-test5.glb'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/prospect-test6.glb'
     },
 
     {
@@ -53,7 +53,7 @@ export default [
     {
         name: 'carPath',
         type: 'file',
-        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track3.json'
+        path: 'https://webflow-public-assets.s3.amazonaws.com/three-projects/prospect-park/models/car-track2.json'
     },
 
     {
