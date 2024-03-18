@@ -50,10 +50,10 @@ void main() {
     // Adjust the start and end points for a softer transition
     float outerEdgeStart = vignetteRadius * innerEdgeSoftness * vignetteRadius;
     // float outerEdgeEnd = vignetteRadius + innerEdgeSoftness * (1.0 + vignetteRadius);
-    float outerEdgeEnd = 2.0;
+    float outerEdgeEnd = 2.5;
     float vignetteAmount = smoothstep(outerEdgeStart, outerEdgeEnd, distanceFromCenter);
     vignetteAmount = 1.0 - vignetteAmount; // Invert the vignette amount
-    vignetteAmount = pow(vignetteAmount, 1.1); // Apply a power function to control the vignette amount
+    vignetteAmount = pow(vignetteAmount, 0.6); // Apply a power function to control the vignette amount
 
     
     // Original color

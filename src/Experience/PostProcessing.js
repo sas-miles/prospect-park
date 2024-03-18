@@ -41,7 +41,7 @@ export default class PostProcessing {
         tDiffuse: { value: null },
         noiseIntensity: { value: 0.0 },
         vignetteColor: { value: new THREE.Vector3(0.9, 0.9, 0.9) },
-        blurStrength: { value: 0.2 },
+        blurStrength: { value: 0.5 },
         vignetteRadius: { value: 1.0 },
       },
       vertexShader: vignetteVertexShader,
@@ -54,7 +54,7 @@ export default class PostProcessing {
   setBloom() {
     this.bloom.strength = 0;
     this.bloom.radius = 0.3;
-    this.bloom.threshold = 0.7;
+    this.bloom.threshold = 0.2;
   }
 
   setRenderPass() {

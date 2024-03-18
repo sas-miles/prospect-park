@@ -109,6 +109,34 @@ export default class Interface {
 
         sphere.add(label); // Attach the label to the sphere
         this.labels[sphere.name] = label;
+
+        // Find the .label-container within the label
+        const labelContainer = div.querySelector(".label-marker-heading");
+
+        if (labelContainer) {
+          // Add a click event listener to the .label-container
+          labelContainer.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            const { camX, camY, camZ } = sphere.userData;
+            const targetDiv = document.querySelector(
+              `div[data-content="${sphere.name}"]`
+            );
+            const pointsTitle = document.querySelector(
+              `.points-title[data-name="${sphere.name}"]`
+            );
+
+            console.log(this.pointsAnimation.animateToTarget);
+            this.pointsAnimation.animateToTarget(
+              sphere.name,
+              pointsTitle,
+              targetDiv,
+              camX,
+              camY,
+              camZ
+            );
+          });
+        }
       }
     });
   }
@@ -192,9 +220,13 @@ export default class Interface {
 
         const { camX, camY, camZ } = sphere.userData;
         const targetDiv = document.querySelector(`div[data-content="${name}"]`);
+        const pointsTitle = document.querySelector(
+          `.points-title[data-name="${name}"]`
+        );
         if (targetDiv) {
           this.pointsAnimation.animateToTarget(
             name,
+            pointsTitle,
             targetDiv,
             camX,
             camY,
@@ -218,9 +250,12 @@ export default class Interface {
         const name = modal ? modal.getAttribute("data-content") : null;
 
         if (name) {
+          const pointsTitle = document.querySelector(
+            `.points-title[data-name="${name}"]`
+          );
           this.pointsAnimation.resetAnimation();
           // Wait for all animations to complete before hiding the modal
-          await this.pointsAnimation.closeModal(name);
+          await this.pointsAnimation.closeModal(name, pointsTitle);
         }
 
         // Close all modals

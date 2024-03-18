@@ -51,7 +51,7 @@ export default class PointsAnimation {
       });
   }
 
-  animateToTarget(name, targetDiv, camX, camY, camZ) {
+  animateToTarget(name, pointsTitle, targetDiv, camX, camY, camZ) {
     const intersects = this.experience.interface.raycaster.intersectObjects(
       this.experience.interface.group.children
     );
@@ -70,7 +70,6 @@ export default class PointsAnimation {
         targetRotation.setFromEuler(
           new THREE.Euler(0, THREE.MathUtils.degToRad(49), 0)
         );
-
         gsap
           .timeline({
             onStart: () => {
@@ -87,12 +86,23 @@ export default class PointsAnimation {
               });
 
               if (this.labels[name]) {
-                gsap.to(this.labels[name].position, {
-                  duration: 1,
-                  y: -0.5,
-                  ease: "power1.out",
-                });
+                gsap.to(
+                  this.labels[name].position,
+                  {
+                    duration: 1,
+                    y: -0.5,
+                    ease: "power1.out",
+                  },
+                  0
+                );
               }
+              gsap.to(
+                document.querySelector(".label-marker-heading"),
+                {
+                  opacity: 0,
+                },
+                0
+              );
             },
             onComplete: () => {
               console.log("POI Camera animation complete");
@@ -121,6 +131,11 @@ export default class PointsAnimation {
             },
             0
           )
+          .to(pointsTitle, {
+            duration: 0.5,
+            opacity: 1,
+            ease: "power1.out",
+          })
           .to(this.markerContent, {
             duration: 0.5,
             opacity: 1,
@@ -157,7 +172,7 @@ export default class PointsAnimation {
     }
   }
 
-  closeModal(name) {
+  closeModal(name, pointsTitle, targetDiv, camX, camY, camZ) {
     const animations = [];
 
     this.experience.interface.spheres.forEach((sphere) => {
@@ -176,15 +191,29 @@ export default class PointsAnimation {
         animations.push(animation);
       }
     });
-
     const markerContentAnimation = new Promise((resolve) => {
-      gsap.timeline().to(this.markerContent, {
-        duration: 0.5,
-        opacity: 0,
-        x: "40vw",
-        ease: "power1.out",
-        onComplete: resolve,
-      });
+      gsap
+        .timeline()
+        .to(
+          pointsTitle,
+          {
+            duration: 0.5,
+            opacity: 0,
+            ease: "power1.out",
+          },
+          0
+        )
+        .to(
+          this.markerContent,
+          {
+            duration: 0.5,
+            opacity: 0,
+            x: "40vw",
+            ease: "power1.out",
+            onComplete: resolve,
+          },
+          0
+        );
     });
 
     animations.push(markerContentAnimation);
@@ -200,16 +229,23 @@ export default class PointsAnimation {
       const label = this.experience.interface.labels[name];
 
       const labelAnimation = new Promise((resolve) => {
-        gsap.timeline().to(
-          label.position,
-          {
-            y: yOffset + 2.0,
+        gsap
+          .timeline()
+          .to(
+            label.position,
+            {
+              y: yOffset + 2.0,
+              duration: 0.5,
+              ease: "power1.out",
+              onComplete: resolve,
+            },
+            0
+          )
+          .to(document.querySelector(".label-marker-heading"), {
+            opacity: 1,
             duration: 0.5,
-            ease: "power1.out",
             onComplete: resolve,
-          },
-          0
-        );
+          });
       });
 
       animations.push(labelAnimation);
