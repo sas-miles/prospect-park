@@ -1,7 +1,11 @@
 import * as THREE from "three";
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from "three/addons/renderers/CSS2DRenderer.js";
 import Experience from "./Experience.js";
-import Controls from './Controls';
+import PointsAnimation from "./Animations/PointsAnimation.js";
+import Map from "./World/Map.js";
 
 export default class Interface {
   constructor() {
@@ -10,54 +14,87 @@ export default class Interface {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
-    this.controls = this.experience.controls;
     this.camera = this.experience.camera.instance;
+
+    this.map = new Map();
+    this.boathouse = this.map.getChildren(["Boathouse"]).Boathouse;
+    this.carousel = this.map.getChildren(["Carasouel005"]).Carasouel005;
+    this.picnic = this.map.getChildren(["picnic002"]).picnic002;
+
+    this.eventEmitter = this.experience.eventEmitter;
+
+    this.controls = this.experience.controls;
+
+    //To-do implement POI child meshes from Map.js
 
     //Debug
     if (this.debug.active) {
-      this.debugFolder = this.debug.gui.addFolder('Markers');
+      this.debugFolder = this.debug.gui.addFolder("Markers");
     }
 
     this.group = new THREE.Group();
     this.experience.scene.add(this.group);
 
-    this.spheres = [];
+    this.group.add(this.boathouse, this.carousel, this.picnic);
 
+    this.spheres = [];
     this.labels = {};
-    this.labelOffsets = {};
+
+    this.pointsAnimation = new PointsAnimation(this.spheres, this.labels);
 
     this.mousePosition = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
+    // Define the materials you want to apply to different meshes
+    this.materials = {
+      Boathouse: new THREE.MeshStandardMaterial({
+        color: 0xe5e1e3,
+        roughness: 1.0,
+        metalness: 0.8,
+      }),
+      Carasouel005: new THREE.MeshLambertMaterial({ color: 0x00ff00 }), // Green material for Carasouel005
+      picnic002: new THREE.MeshPhongMaterial({ color: 0x0000ff }), // Blue material for picnic002
+    };
+
+    this.createSpheresFromDOM();
+    this.setRaycaster();
     this.setLabelRenderer();
     this.setLabels();
+    this.closeModal();
+    this.setDebug();
   }
 
-  setSphereGroup() {
-    // Find all sphere containers from DOM
-    const sphereContainers = document.querySelectorAll('.sphere-container');
+  createSpheresFromDOM() {
+    const sphereContainers = document.querySelectorAll(".sphere-container");
 
-    sphereContainers.forEach((item, index) => {
-      // Correctly declare index here
-      const x = parseFloat(item.getAttribute('data-x'));
-      const y = parseFloat(item.getAttribute('data-y'));
-      const z = parseFloat(item.getAttribute('data-z'));
+    sphereContainers.forEach((item) => {
+      const x = parseFloat(item.getAttribute("data-x"));
+      const y = parseFloat(item.getAttribute("data-y"));
+      const z = parseFloat(item.getAttribute("data-z"));
 
-      const name = item.getAttribute('data-label');
+      const camX = parseFloat(item.getAttribute("cam-x"));
+      const camY = parseFloat(item.getAttribute("cam-y"));
+      const camZ = parseFloat(item.getAttribute("cam-z"));
 
-      // Create the sphere and set position and name
-      const newSphere = this.createSphere(x, y, z, name);
+      const name = item.getAttribute("data-label");
+
+      const newSphere = this.createSphere(x, y, z, camX, camY, camZ, name);
       this.group.add(newSphere);
       this.spheres.push(newSphere);
     });
   }
 
-  createSphere(x, y, z, name) {
+  createSphere(x, y, z, camX, camY, camZ, name) {
     const geo = new THREE.SphereGeometry(0.5);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xd9d9d9,
+      transparent: true,
+      opacity: 0.7,
+    });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(x, y, z);
-    mesh.name = name; // Set the name of the mesh
+    mesh.name = name;
+    mesh.userData = { camX, camY, camZ };
     return mesh;
   }
 
@@ -66,36 +103,60 @@ export default class Interface {
       const div = document.querySelector(`[data-label="${sphere.name}"]`);
 
       if (div) {
-        const yOffset = parseFloat(div.getAttribute('labelY-offset')) || 0;
+        const yOffset = parseFloat(div.getAttribute("labelY-offset")) || 0;
         const label = new CSS2DObject(div);
-        label.position.set(0, yOffset + 2.0, 0); // Adjust label position relative to the sphere
+        label.position.set(0, yOffset + 2.0, 0);
 
         sphere.add(label); // Attach the label to the sphere
         this.labels[sphere.name] = label;
+
+        // Find the .label-container within the label
+        const labelContainer = div.querySelector(".label-marker-heading");
+
+        if (labelContainer) {
+          // Add a click event listener to the .label-container
+          labelContainer.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            const { camX, camY, camZ } = sphere.userData;
+            const targetDiv = document.querySelector(
+              `div[data-content="${sphere.name}"]`
+            );
+            const pointsTitle = document.querySelector(
+              `.points-title[data-name="${sphere.name}"]`
+            );
+
+            console.log(this.pointsAnimation.animateToTarget);
+            this.pointsAnimation.animateToTarget(
+              sphere.name,
+              pointsTitle,
+              targetDiv,
+              camX,
+              camY,
+              camZ
+            );
+          });
+        }
       }
     });
   }
 
   setLabelRenderer() {
-    // Initialize a new CSS2DRenderer
     this.labelRenderer = new CSS2DRenderer();
     this.labelRenderer.setSize(this.sizes.width, this.sizes.height);
-    this.labelRenderer.domElement.style.position = 'absolute';
-    this.labelRenderer.domElement.style.top = '0';
-    this.labelRenderer.domElement.style.display = 'block';
-    this.labelRenderer.domElement.style.pointerEvents = 'none';
-    this.labelRenderer.domElement.style.zIndex = '0';
+    this.labelRenderer.domElement.classList.add("label-renderer");
     document.body.appendChild(this.labelRenderer.domElement);
   }
 
   setRaycaster() {
-    const raycast = (event) => {
-      if (event.target.tagName.toLowerCase() === 'a') {
+    const hoverRaycast = (event) => {
+      if (event.target.tagName.toLowerCase() === "a") {
         return;
       }
+
       let clientX, clientY;
-      if (event.type.includes('touch')) {
-        // Use the first touch point for the raycast
+
+      if (event.type.includes("touch")) {
         const touch = event.touches[0] || event.changedTouches[0];
         clientX = touch.clientX;
         clientY = touch.clientY;
@@ -107,43 +168,111 @@ export default class Interface {
       this.mousePosition.x = (clientX / this.sizes.width) * 2 - 1;
       this.mousePosition.y = -(clientY / this.sizes.height) * 2 + 1;
 
-      this.raycaster.setFromCamera(this.mousePosition, this.experience.camera.instance);
+      this.raycaster.setFromCamera(
+        this.mousePosition,
+        this.experience.camera.instance
+      );
+
       const intersects = this.raycaster.intersectObjects(this.group.children);
-
-      // Close all active modals
-      document.querySelectorAll('div[data-content].is-active').forEach((modal) => {
-        modal.classList.remove('is-active');
-      });
-
       if (intersects.length > 0) {
-        const name = intersects[0].object.name;
+        const sphere = intersects[0].object;
+        const name = sphere.name;
+
+        if (name === "Boathouse") {
+          this.boathouse.material = new THREE.MeshStandardMaterial({
+            color: 0x00ff00,
+          }); // Change to green
+        }
+      } else {
+        // If no intersection is found, change the boathouse material back to the original
+        this.boathouse.material = this.materials.Boathouse;
+      }
+    };
+
+    const raycast = (event) => {
+      if (event.target.tagName.toLowerCase() === "a") {
+        return;
+      }
+
+      let clientX, clientY;
+
+      if (event.type.includes("touch")) {
+        const touch = event.touches[0] || event.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
+      }
+
+      this.mousePosition.x = (clientX / this.sizes.width) * 2 - 1;
+      this.mousePosition.y = -(clientY / this.sizes.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(
+        this.mousePosition,
+        this.experience.camera.instance
+      );
+
+      const intersects = this.raycaster.intersectObjects(this.group.children);
+      if (intersects.length > 0) {
+        const sphere = intersects[0].object;
+        const name = sphere.name;
+
+        const { camX, camY, camZ } = sphere.userData;
         const targetDiv = document.querySelector(`div[data-content="${name}"]`);
+        const pointsTitle = document.querySelector(
+          `.points-title[data-name="${name}"]`
+        );
         if (targetDiv) {
-          targetDiv.classList.add('is-active');
+          this.pointsAnimation.animateToTarget(
+            name,
+            pointsTitle,
+            targetDiv,
+            camX,
+            camY,
+            camZ
+          );
         }
       }
     };
 
-    // Listen for both touch and mouse events
-    window.addEventListener('click', raycast);
-    window.addEventListener('touchend', raycast, { passive: false }); // Use passive: false to allow preventDefault
+    window.addEventListener("mousemove", hoverRaycast);
+    window.addEventListener("click", raycast);
+    window.addEventListener("touchend", raycast, { passive: false });
   }
 
-  closeModal() {
-    document.querySelectorAll('.marker-close').forEach((closeButton) => {
-      closeButton.addEventListener('click', (event) => {
-        // Prevent the event from propagating to avoid triggering other click events
+  async closeModal() {
+    document.querySelectorAll(".marker-close").forEach((closeButton) => {
+      closeButton.addEventListener("click", async (event) => {
         event.stopPropagation();
 
+        const modal = event.target.closest("div[data-content]");
+        const name = modal ? modal.getAttribute("data-content") : null;
+
+        if (name) {
+          const pointsTitle = document.querySelector(
+            `.points-title[data-name="${name}"]`
+          );
+          this.pointsAnimation.resetAnimation();
+          // Wait for all animations to complete before hiding the modal
+          await this.pointsAnimation.closeModal(name, pointsTitle);
+        }
+
         // Close all modals
-        document.querySelectorAll('div[data-content].is-active').forEach((modal) => {
-          modal.classList.remove('is-active');
-        });
+        document
+          .querySelectorAll("div[data-content].is-active")
+          .forEach((modal) => {
+            setTimeout(() => {
+              modal.classList.remove("is-active");
+              console.log("Modal closed");
+              this.eventEmitter.trigger("controls:enable");
+            }, 1000);
+          });
       });
     });
   }
 
-  reset() {
+  async reset() {
     // Remove spheres from the Three.js scene and dispose of their resources
     this.spheres.forEach((sphere) => {
       this.group.remove(sphere);
@@ -179,15 +308,27 @@ export default class Interface {
     this.closeModal();
   }
 
-
   resize() {
     this.labelRenderer.setSize(this.sizes.width, this.sizes.height);
   }
 
   update() {
     if (this.labelRenderer) {
-      this.labelRenderer.render(this.experience.scene, this.experience.camera.instance);
+      this.labelRenderer.render(
+        this.experience.scene,
+        this.experience.camera.instance
+      );
+    }
+  }
+
+  setDebug() {
+    if (this.debug.active) {
+      this.spheres.forEach((sphere, index) => {
+        const folder = this.debugFolder.addFolder(`${sphere.name}`);
+        folder.add(sphere.position, "x", -80, 80, 0.001);
+        folder.add(sphere.position, "y", -80, 80, 0.001);
+        folder.add(sphere.position, "z", -80, 80, 0.001);
+      });
     }
   }
 }
-    

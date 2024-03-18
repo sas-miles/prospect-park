@@ -2,24 +2,22 @@ import * as THREE from "three";
 import gsap from "gsap";
 import Experience from "../Experience.js";
 
-export default class CameraAnimations{
+export default class CameraAnimations {
   constructor() {
     this.experience = new Experience();
     this.eventEmitter = this.experience.eventEmitter;
     this.scene = this.experience.scene;
-    this.camera = this.experience.camera.instance; 
+    this.camera = this.experience.camera.instance;
     this.time = this.experience.time;
     this.resources = this.experience.resources;
 
     this.resource = this.resources.items.cameraPath;
 
-    
     this.setCameraPath();
     this.animateCameraAlongPath();
-
   }
 
- setCameraPath() {
+  setCameraPath() {
     if (!this.resource || !this.resource.points) {
       console.error("Resource is not loaded or does not contain points.");
       return;
@@ -35,8 +33,8 @@ export default class CameraAnimations{
 
   animateCameraAlongPath() {
     if (!this.path) {
-        console.error("Path for animation is not set.");
-        return;
+      console.error("Path for animation is not set.");
+      return;
     }
 
     // Assuming initialYaw is the camera's current yaw angle
@@ -47,35 +45,31 @@ export default class CameraAnimations{
     // Object to track the progress of the path animation and yaw rotation
     const animationProgress = { path: 0, yaw: initialYaw };
 
-    gsap.timeline({
+    gsap
+      .timeline({
         onStart: () => {
-            this.eventEmitter.trigger('controls:disable');
-            console.log("Camera animation started");
+          this.eventEmitter.trigger("controls:disable");
+          // console.log("Camera animation started");
         },
         onComplete: () => {
-            this.experience.controls.currentRotationY = finalYaw;
-            this.eventEmitter.trigger('controls:enable');
-            console.log("Camera animation complete");
+          this.experience.controls.currentRotationY = finalYaw;
+          this.eventEmitter.trigger("controls:enable");
+          // console.log("Camera animation complete");
         },
         ease: "power2.out",
-    })
-    .to(animationProgress, {
+      })
+      .to(animationProgress, {
         path: 1,
         yaw: finalYaw,
         duration: 8, // Duration in seconds
         onUpdate: () => {
-            // Update camera position along the path
-            const point = this.path.getPointAt(animationProgress.path);
-            this.camera.position.copy(point);
+          // Update camera position along the path
+          const point = this.path.getPointAt(animationProgress.path);
+          this.camera.position.copy(point);
 
-            // Apply the interpolated yaw rotation
-            this.camera.rotation.y = animationProgress.yaw;
-
-            // Optionally, update camera's pitch and roll or use lookAt here
+          // Apply the interpolated yaw rotation
+          this.camera.rotation.y = animationProgress.yaw;
         },
-    });
+      });
+  }
 }
-
-
-}
-

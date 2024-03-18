@@ -1,118 +1,108 @@
-import * as THREE from 'three'
-import gsap from 'gsap'
-import Experience from '../Experience.js'
+import * as THREE from "three";
+import gsap from "gsap";
+import Experience from "../Experience.js";
 
 export default class Heli {
+  constructor() {
+    this.experience = new Experience();
+    this.scene = this.experience.scene;
+    this.resources = this.experience.resources;
+    this.time = this.experience.time;
+    this.debug = this.experience.debug;
 
-    constructor() {
-        this.experience = new Experience()
-        this.scene = this.experience.scene
-        this.resources = this.experience.resources
-        this.time = this.experience.time
-        this.debug = this.experience.debug
-
-        //Debug
-        if(this.debug.active){
-            this.debugFolder = this.debug.gui.addFolder('helicopter')
-        }
-
-
-        //Setup
-        this.resource = this.resources.items.helicopter
-        this.resourcePath = this.resources.items.heliPath
-        console.log(this.resourcePath)
-        this.setModel()
-        this.setPath()
-        this.animateAlongPath()
+    //Debug
+    if (this.debug.active) {
+      this.debugFolder = this.debug.gui.addFolder("Heli");
     }
 
-    setModel() {
-        this.model = this.resource.scene
-        this.scene.add(this.model)
+    //Setup
+    this.resource = this.resources.items.helicopter;
+    this.resourcePath = this.resources.items.heliPath;
 
-        this.model.traverse((child) => {
-            if(child instanceof THREE.Mesh){
-                child.castShadow = true
-                child.receiveShadow = true
-            }
-        })
-        
+    this.setModel();
+    this.setPath();
+    this.animateAlongPath();
+  }
+
+  setModel() {
+    this.model = this.resource.scene;
+
+    // Compute the bounding box of the model
+    const box = new THREE.Box3().setFromObject(this.model);
+
+    // Compute the center of the bounding box
+    const center = box.getCenter(new THREE.Vector3());
+
+    // Translate the model so that its center is at the origin
+    this.model.position.sub(center);
+
+    this.model.position.setY(0);
+
+    // Create a group and add the model to it
+    this.group = new THREE.Group();
+    this.group.add(this.model);
+
+    // Add the group to the scene
+    this.scene.add(this.group);
+  }
+
+  setPath() {
+    // Assuming this.resource.points is an array of point objects
+    const points = this.resourcePath.points.map(
+      (pt) => new THREE.Vector3(pt.x, pt.y, pt.z)
+    );
+
+    this.path = new THREE.CatmullRomCurve3(points);
+    // Create a geometry from the points
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    // Create a material for the line
+    const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+    if (this.debug.active) {
+      // Create a material for the line
+      const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+      // Create a line and add it to the scene
+      this.line = new THREE.Line(geometry, material);
+      this.scene.add(this.line);
+      this.line.position.set(0, 1, 0);
+
+      // Add a checkbox to the GUI to show or hide the line
+      this.debugFolder.add(this.line, "visible").name("Show Path");
+    }
+  }
+
+  animateAlongPath() {
+    if (!this.path) {
+      console.log("Path is not set");
+      return;
+    } else {
+      console.log("Path is set");
     }
 
-    setPath() {
-      
-        // Assuming this.resource.points is an array of point objects
-        const points = this.resourcePath.points.map(
-        (pt) => new THREE.Vector3(pt.x, pt.y, pt.z)
-        );
-    
-        this.path = new THREE.CatmullRomCurve3(points);
-    }
+    const animationProgress = { path: 0 };
 
-    animateAlongPath() {
-        if (!this.path) {
-            console.error("Path for animation is not set.");
-            return;
-        }
-    
-        const animationProgress = { path: 0 }
-    
-        gsap.timeline()
-        .to(animationProgress, {
-            path: 1,
-            duration: 10,
-            repeat: -1,
-            onUpdate: () => {
-                // Get the point on the path corresponding to the current progress
-                const point = this.path.getPointAt(animationProgress.path);
-    
-                // Update the model's position
-                this.model.position.copy(point);
-            }
-        })
-    }
+    gsap.timeline().to(animationProgress, {
+      path: 1,
+      duration: 40,
+      repeat: -1,
+      onUpdate: () => {
+        // Get the point on the path corresponding to the current progress
+        const point = this.path.getPointAt(animationProgress.path);
 
-    // setAnimation() {
-    //     this.animation = {}
-    //     this.animation.mixer = new THREE.AnimationMixer(this.model)
+        // Update the group's position
+        this.group.position.copy(point);
 
-    //     this.animation.actions = {}
+        // Get the tangent to the path at the current point
+        const tangent = this.path.getTangentAt(animationProgress.path);
 
-    //     this.animation.actions.idle = this.animation.mixer.clipAction(this.resource.animations[0])
-    //     this.animation.actions.walking = this.animation.mixer.clipAction(this.resource.animations[1])
-    //     this.animation.actions.running = this.animation.mixer.clipAction(this.resource.animations[2])   
+        // Make the group face the direction of the tangent
+        this.group.lookAt(new THREE.Vector3().addVectors(point, tangent));
 
-    //     this.animation.actions.current = this.animation.actions.idle
-    //     this.animation.actions.current.play()
-
-    //     this.animation.play = (name) => {
-    //         const newAction = this.animation.actions[name]
-    //         const oldAction = this.animation.actions.current
-
-    //         newAction.reset()
-    //         newAction.play()
-    //         newAction.crossFadeFrom(oldAction, 1)
-
-    //         this.animation.actions.current = newAction
-    //     }
-
-    //     //Debug
-    //     if(this.debug.active){
-    //         const debugObject = {
-    //             playIdle: () => { this.animation.play('idle') },
-    //             playWalking: () => { this.animation.play('walking') },
-    //             playRunning: () => { this.animation.play('running') },
-    //         }
-
-    //         this.debugFolder.add(debugObject, 'playIdle')
-    //         this.debugFolder.add(debugObject, 'playWalking')
-    //         this.debugFolder.add(debugObject, 'playRunning')
-
-    //     }
-    // }
-
-    update() {
-        this.animation.mixer.update(this.time.delta * 0.001)
-    }
-
+        // Adjust the group's rotation
+        this.group.rotation.y += THREE.MathUtils.degToRad(90); // Adjust this value as needed
+      },
+    });
+  }
 }
