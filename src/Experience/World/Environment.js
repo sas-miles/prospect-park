@@ -41,7 +41,7 @@ export default class Environment {
   }
 
   setSunLight() {
-    this.sunLight = new THREE.DirectionalLight("#FFF2CC", 4.0);
+    this.sunLight = new THREE.DirectionalLight("#FFF2CC", 5.0);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.camera.far = 800;
     this.sunLight.shadow.camera.near = 0.8;
@@ -84,7 +84,7 @@ export default class Environment {
 
   setEnvironmentMap() {
     this.environmentMap = {};
-    this.environmentMap.intensity = 0.5;
+    this.environmentMap.intensity = 0.6;
     this.environmentMap.texture = this.resources.items.environmentMapTexture;
     this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace;
 
