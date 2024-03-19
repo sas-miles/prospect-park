@@ -25,6 +25,8 @@ export default class Controls {
     this.currentRotationY = 0;
     this.currentTargetPositionZ = 0;
 
+    this.initialCameraRotation = null;
+
     this.fixedPitch = THREE.MathUtils.degToRad(-20);
 
     // Retrieve the forward direction of the camera in world space
@@ -47,6 +49,7 @@ export default class Controls {
 
     this.experience.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
+      this.initialCameraRotation = this.camera.rotation.clone();
       // console.log('Controls: Received disable event');
     });
 
@@ -159,12 +162,18 @@ export default class Controls {
     // Ensure rotation order is correct for Euler manipulation
     this.camera.rotation.order = "YXZ";
 
-    // Smoothly interpolate the camera's yaw towards the target rotation
-    // Calculate the difference between the current yaw and the target yaw
-    const currentYaw = this.camera.rotation.y;
-    const deltaYaw = this.currentRotationY - currentYaw;
-    // Apply damping to the yaw difference and update the current yaw
-    this.camera.rotation.y += deltaYaw * this.damping;
+    // If controls are re-enabled, use the stored initial rotation
+    if (this.initialCameraRotation) {
+      this.camera.rotation.copy(this.initialCameraRotation);
+      this.initialCameraRotation = null; // Reset the initial rotation
+    } else {
+      // Smoothly interpolate the camera's yaw towards the target rotation
+      // Calculate the difference between the current yaw and the target yaw
+      const currentYaw = this.camera.rotation.y;
+      const deltaYaw = this.currentRotationY - currentYaw;
+      // Apply damping to the yaw difference and update the current yaw
+      this.camera.rotation.y += deltaYaw * this.damping;
+    }
 
     // Fix the pitch angle
     this.camera.rotation.x = this.fixedPitch;

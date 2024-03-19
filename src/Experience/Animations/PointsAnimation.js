@@ -69,7 +69,13 @@ export default class PointsAnimation {
         this.eventEmitter.trigger("controls:disable");
 
         this.initialCameraPosition = this.camera.position.clone();
-        this.initialCameraRotation = this.camera.rotation.clone();
+        this.initialCameraRotation = this.camera.quaternion.clone();
+
+        // Create a new quaternion for the target rotation
+        let targetRotation = new THREE.Quaternion();
+        targetRotation.setFromEuler(
+          new THREE.Euler(0, THREE.MathUtils.degToRad(49), 0)
+        );
 
         const labelVisibility = document.querySelectorAll(".label-visibility");
 
@@ -84,21 +90,11 @@ export default class PointsAnimation {
         );
         pointsModal.classList.add("is-modal-visibility");
 
-        // Points Title Visibility - Set up to show
-        const pointsTitle = targetDiv.querySelector(".points-title_visibility");
-        pointsTitle.classList.add("is-active-block");
-
         // Main Content Visibility - Set up to show
         const pointMainVisibility = targetDiv.querySelector(
           ".point-content-main_visibility"
         );
         pointMainVisibility.classList.add("is-active-block");
-
-        // Create a new quaternion for the target rotation
-        let targetRotation = new THREE.Quaternion();
-        targetRotation.setFromEuler(
-          new THREE.Euler(0, THREE.MathUtils.degToRad(49), 0)
-        );
 
         gsap
           .timeline({
@@ -161,11 +157,6 @@ export default class PointsAnimation {
             },
             0
           )
-          .to(pointsTitle, {
-            duration: 0.5,
-            opacity: 1,
-            ease: "power1.out",
-          })
           .to(pointsModal, {
             duration: 0.5,
             opacity: 1,
@@ -177,25 +168,27 @@ export default class PointsAnimation {
   }
 
   resetAnimation() {
-    if (this.initialCameraPosition && this.initialCameraRotation) {
+    if (this.initialCameraPosition) {
       this.closeModal(this.name, this.targetDiv);
+
+      // Store the current camera rotation
+      const currentRotation = new THREE.Euler().setFromQuaternion(
+        this.camera.quaternion,
+        this.camera.rotation.order
+      );
 
       gsap.to(this.camera.position, {
         duration: 2,
         x: this.initialCameraPosition.x,
         y: this.initialCameraPosition.y,
         z: this.initialCameraPosition.z,
-        onUpdate: () => {
-          this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        },
         ease: "power1.inOut",
-      });
-      gsap.to(this.camera.rotation, {
-        duration: 2,
-        x: this.initialCameraRotation.x,
-        y: this.initialCameraRotation.y,
-        z: this.initialCameraRotation.z,
-        ease: "power1.inOut",
+        // onUpdate: () => {
+        //   // Preserve the current rotation during the animation
+        //   this.camera.rotation.setFromQuaternion(
+        //     new THREE.Quaternion().setFromEuler(currentRotation)
+        //   );
+        // },
       });
     }
   }
@@ -215,7 +208,6 @@ export default class PointsAnimation {
     });
 
     // Select the elements with classes that were modified during the modal display
-    const pointsTitle = targetDiv.querySelector(".points-title_visibility");
     const pointsModal = targetDiv.querySelector(
       ".point-content-modal_visibility"
     );
@@ -229,7 +221,6 @@ export default class PointsAnimation {
       .timeline({
         onComplete: () => {
           // Once animation is complete, remove classes
-          pointsTitle.classList.remove("is-active-block");
           pointsModal.classList.remove("is-modal-visibility");
           pointMainVisibility.classList.remove("is-active-block");
 
@@ -242,15 +233,6 @@ export default class PointsAnimation {
           this.eventEmitter.trigger("controls:enable");
         },
       })
-      .to(
-        pointsTitle,
-        {
-          duration: 0.5,
-          opacity: 0,
-          ease: "power1.out",
-        },
-        0
-      )
       .to(
         pointsModal,
         {

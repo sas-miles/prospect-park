@@ -17,9 +17,6 @@ export default class Interface {
     this.camera = this.experience.camera.instance;
 
     this.map = new Map();
-    this.boathouse = this.map.getChildren(["Boathouse"]).Boathouse;
-    this.carousel = this.map.getChildren(["Carasouel005"]).Carasouel005;
-    this.picnic = this.map.getChildren(["picnic002"]).picnic002;
 
     this.eventEmitter = this.experience.eventEmitter;
 
@@ -32,8 +29,6 @@ export default class Interface {
 
     this.group = new THREE.Group();
     this.experience.scene.add(this.group);
-
-    this.group.add(this.boathouse, this.carousel, this.picnic);
 
     this.spheres = [];
     this.labels = {};
@@ -74,15 +69,26 @@ export default class Interface {
       const camY = parseFloat(item.getAttribute("cam-y"));
       const camZ = parseFloat(item.getAttribute("cam-z"));
 
+      const camRotationY = parseFloat(item.getAttribute("cam-rotation-y"));
+
       const name = item.getAttribute("data-label");
 
-      const newSphere = this.createSphere(x, y, z, camX, camY, camZ, name);
+      const newSphere = this.createSphere(
+        x,
+        y,
+        z,
+        camX,
+        camY,
+        camZ,
+        camRotationY,
+        name
+      );
       this.group.add(newSphere);
       this.spheres.push(newSphere);
     });
   }
 
-  createSphere(x, y, z, camX, camY, camZ, name) {
+  createSphere(x, y, z, camX, camY, camZ, camRotationY, name) {
     const geo = new THREE.SphereGeometry(0.5);
     const mat = new THREE.MeshBasicMaterial({
       color: 0xd9d9d9,
@@ -92,7 +98,7 @@ export default class Interface {
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(x, y, z);
     mesh.name = name;
-    mesh.userData = { camX, camY, camZ };
+    mesh.userData = { camX, camY, camZ, camRotationY };
     return mesh;
   }
 
@@ -103,7 +109,7 @@ export default class Interface {
     }
 
     this.group.children.forEach((sphere) => {
-      const { camX, camY, camZ } = sphere.userData;
+      const { camX, camY, camZ, camRotationY } = sphere.userData;
       const sphereContainer = document.querySelector(
         `.sphere-container[data-label="${sphere.name}"]`
       );
@@ -136,7 +142,8 @@ export default class Interface {
                 targetDiv,
                 camX,
                 camY,
-                camZ
+                camZ,
+                camRotationY
               );
             }
           });
@@ -213,7 +220,7 @@ export default class Interface {
         const sphere = intersects[0].object;
         const name = sphere.name;
 
-        const { camX, camY, camZ } = sphere.userData;
+        const { camX, camY, camZ, camRotationY } = sphere.userData;
         const targetDiv = document.querySelector(
           `.points-of-interest_target[data-content="${name}"]`
         );
@@ -223,7 +230,8 @@ export default class Interface {
             targetDiv,
             camX,
             camY,
-            camZ
+            camZ,
+            camRotationY
           );
         }
       }
@@ -248,7 +256,10 @@ export default class Interface {
         if (targetDiv) {
           this.pointsAnimation.resetAnimation();
           this.pointsAnimation.closeModal(name, targetDiv);
-          this.eventEmitter.trigger("controls:enable");
+
+          setTimeout(() => {
+            // this.eventEmitter.trigger("controls:enable");
+          }, 1000);
         }
       });
     });
