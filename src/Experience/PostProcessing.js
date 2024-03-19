@@ -52,9 +52,9 @@ export default class PostProcessing {
   }
 
   setBloom() {
-    this.bloom.strength = 0.15;
-    this.bloom.radius = 0.0001;
-    this.bloom.threshold = 0.9;
+    this.bloom.strength = 0.1;
+    this.bloom.radius = 0.09;
+    this.bloom.threshold = 1.1;
   }
 
   setRenderPass() {
