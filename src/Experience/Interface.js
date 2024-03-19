@@ -247,11 +247,8 @@ export default class Interface {
 
         if (targetDiv) {
           this.pointsAnimation.resetAnimation();
-
-          setTimeout(() => {
-            this.pointsAnimation.closeModal(name, targetDiv);
-            this.eventEmitter.trigger("controls:enable");
-          }, 2000);
+          this.pointsAnimation.closeModal(name, targetDiv);
+          this.eventEmitter.trigger("controls:enable");
         }
       });
     });
