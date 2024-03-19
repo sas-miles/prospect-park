@@ -88,7 +88,7 @@ void main() {
     vec3 finalColor = mix(rgbShiftColor, color, vignetteAmount);
 
     // Apply the vignette effect with adjusted opacity
-    float vignetteOpacity = 0.3; // Adjust this value as needed
+    float vignetteOpacity = 0.1; // Adjust this value as needed
     finalColor = mix(finalColor, vignetteColor, (1.0 - vignetteAmount) * vignetteOpacity);
 
     // Create a mask to apply the blur outside the vignette area
