@@ -5,7 +5,6 @@ import {
 } from "three/addons/renderers/CSS2DRenderer.js";
 import Experience from "./Experience.js";
 import PointsAnimation from "./Animations/PointsAnimation.js";
-import Map from "./World/Map.js";
 
 export default class Interface {
   constructor() {
@@ -15,8 +14,10 @@ export default class Interface {
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
     this.camera = this.experience.camera.instance;
+    this.resources = this.experience.resources;
 
-    this.map = new Map();
+    this.resource = this.resources.items.Pin;
+    this.model = this.resource.scene;
 
     this.eventEmitter = this.experience.eventEmitter;
 
@@ -89,17 +90,22 @@ export default class Interface {
   }
 
   createSphere(x, y, z, camX, camY, camZ, camRotationY, name) {
-    const geo = new THREE.SphereGeometry(0.5);
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0xd9d9d9,
-      transparent: true,
-      opacity: 0.7,
+    const modelClone = this.model.clone();
+    modelClone.traverse(function (child) {
+      if (child.isMesh) {
+        child.material = child.material.clone(); // Optionally clone the material if needed
+        child.castShadow = true; // If you're using shadows
+        child.receiveShadow = true; // If you're using shadows
+        child.name = name;
+        child.userData = { camX, camY, camZ, camRotationY };
+      }
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x, y, z);
-    mesh.name = name;
-    mesh.userData = { camX, camY, camZ, camRotationY };
-    return mesh;
+
+    modelClone.position.set(x, y, z);
+    modelClone.name = name;
+    modelClone.userData = { camX, camY, camZ, camRotationY };
+
+    return modelClone;
   }
 
   setLabels() {
@@ -125,7 +131,6 @@ export default class Interface {
           sphere.add(label); // Attach the label to the sphere
 
           this.labels[sphere.name] = label;
-          console.log("set label", this.labels);
 
           // Add a click event listener to the labelTarget div
           labelTarget.addEventListener("click", (event) => {
@@ -219,7 +224,7 @@ export default class Interface {
       if (intersects.length > 0) {
         const sphere = intersects[0].object;
         const name = sphere.name;
-
+        console.log("Clicked on sphere:", name);
         const { camX, camY, camZ, camRotationY } = sphere.userData;
         const targetDiv = document.querySelector(
           `.points-of-interest_target[data-content="${name}"]`

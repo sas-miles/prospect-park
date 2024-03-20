@@ -21,11 +21,13 @@ export default class Heli {
 
     this.setModel();
     this.setPath();
-    this.animateAlongPath();
+    // this.animateAlongPath();
+    this.setAnimation();
   }
 
   setModel() {
     this.model = this.resource.scene;
+    console.log("heli", this.model);
 
     // Compute the bounding box of the model
     const box = new THREE.Box3().setFromObject(this.model);
@@ -104,5 +106,30 @@ export default class Heli {
         this.group.rotation.y += THREE.MathUtils.degToRad(90); // Adjust this value as needed
       },
     });
+  }
+
+  setAnimation() {
+    this.animation = {};
+    this.animation.mixer = new THREE.AnimationMixer(this.model);
+
+    this.animation.actions = {};
+
+    this.animation.actions.rotor = this.animation.mixer.clipAction(
+      this.resource.animations[0]
+    );
+
+    this.animation.actions.current = this.animation.actions.rotor;
+    this.animation.actions.current.play();
+
+    // this.animation.play = (name) => {
+    //   const newAction = this.animation.actions[name];
+    //   const oldAction = this.animation.actions.current;
+
+    //   newAction.reset();
+    //   newAction.play();
+    //   newAction.crossFadeFrom(oldAction, 1);
+
+    //   this.animation.actions.current = newAction;
+    // };
   }
 }

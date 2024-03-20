@@ -18,6 +18,7 @@ export default class PointsAnimation {
 
     this.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
+      this.initialCameraRotation = this.camera.rotation.clone();
       console.log("Points: Received disable event");
     });
 
@@ -28,6 +29,7 @@ export default class PointsAnimation {
   }
 
   introAnimation() {
+    this.camera.rotation.copy(this.initialCameraRotation);
     const labelVisibility = document.querySelectorAll(".label-visibility");
 
     // Add a class to each labelVisibility element
@@ -39,14 +41,14 @@ export default class PointsAnimation {
 
     gsap
       .timeline()
-      .to(
-        this.spheres.map((sphere) => sphere.material),
-        {
-          duration: 0.5,
-          opacity: 1,
-          ease: "power3.in",
-        }
-      )
+      // .to(
+      //   this.spheres.map((sphere) => sphere.material),
+      //   {
+      //     duration: 0.5,
+      //     opacity: 1,
+      //     ease: "power3.in",
+      //   }
+      // )
       .to(labelVisibility, {
         duration: 0.5,
         opacity: 1,
@@ -100,16 +102,16 @@ export default class PointsAnimation {
           .timeline({
             onStart: () => {
               console.log("POI Camera animation started");
-              this.spheres.forEach((sphere) => {
-                if (sphere.name === name) {
-                  gsap.timeline().to(
-                    this.spheres.map((sphere) => sphere.material),
-                    {
-                      opacity: 0,
-                    }
-                  );
-                }
-              });
+              // this.spheres.forEach((sphere) => {
+              //   if (sphere.name === name) {
+              //     gsap.timeline().to(
+              //       this.spheres.map((sphere) => sphere.material),
+              //       {
+              //         opacity: 0,
+              //       }
+              //     );
+              //   }
+              // });
 
               if (this.labels[name]) {
                 gsap.to(
@@ -195,17 +197,17 @@ export default class PointsAnimation {
 
   closeModal(name, targetDiv) {
     // Fade in spheres visibility if they were hidden
-    this.experience.interface.spheres.forEach((sphere) => {
-      if (sphere.name === name) {
-        gsap.to(
-          this.spheres.map((sphere) => sphere.material),
-          {
-            duration: 1,
-            opacity: 1,
-          }
-        );
-      }
-    });
+    // this.experience.interface.spheres.forEach((sphere) => {
+    //   if (sphere.name === name) {
+    //     gsap.to(
+    //       this.spheres.map((sphere) => sphere.material),
+    //       {
+    //         duration: 1,
+    //         opacity: 1,
+    //       }
+    //     );
+    //   }
+    // });
 
     // Select the elements with classes that were modified during the modal display
     const pointsModal = targetDiv.querySelector(
