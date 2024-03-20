@@ -29,5 +29,8 @@ export default class World {
     });
   }
 
-  update() {}
+  update() {
+    if (this.heli) this.heli.update();
+    if (this.car) this.car.update();
+  }
 }
