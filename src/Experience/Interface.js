@@ -13,6 +13,7 @@ export default class Interface {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
+    this.time = this.experience.time;
     this.camera = this.experience.camera.instance;
     this.resources = this.experience.resources;
 
@@ -104,6 +105,10 @@ export default class Interface {
     modelClone.position.set(x, y, z);
     modelClone.name = name;
     modelClone.userData = { camX, camY, camZ, camRotationY };
+
+    // Assign a random phase and frequency to each sphere for organic movement
+    modelClone.userData.phase = 2 * Math.PI; // Random phase between 0 and 2π
+    modelClone.userData.frequency = 0.05; // Lower and narrow the frequency range
 
     return modelClone;
   }
@@ -317,6 +322,14 @@ export default class Interface {
         this.experience.camera.instance
       );
     }
+
+    // Apply a more pronounced floating effect to each sphere
+    this.spheres.forEach((sphere) => {
+      const time = this.time.elapsed + sphere.userData.phase; // Use elapsed time + phase for offset
+      // Significantly increase the amplitude for a more pronounced effect
+      sphere.position.y +=
+        Math.sin(time * sphere.userData.frequency) * 0.0008 * this.time.delta; // Increased amplitude
+    });
   }
 
   setDebug() {
