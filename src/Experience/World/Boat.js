@@ -2,14 +2,14 @@ import * as THREE from "three";
 import gsap from "gsap";
 import Experience from "../Experience.js";
 
-export default class Car {
+export default class Boat {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
 
-    this.resource = this.resources.items.car;
+    this.resource = this.resources.items.boat;
 
     this.setModel();
     this.setAnimation();
@@ -18,6 +18,7 @@ export default class Car {
   setModel() {
     this.model = this.resource.scene;
     this.scene.add(this.model);
+    this.model.position.y -= 0.1;
   }
 
   setAnimation() {
@@ -34,15 +35,19 @@ export default class Car {
       this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
       console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
     }
-    if (this.animation.actions["car"]) {
-      console.log("Playing animation: car");
-      this.animation.actions["car"].play();
-    } else {
-      console.log("Animation 'car' not found");
+
+    // Play the animations by their names
+    if (this.animation.actions["Boat"]) {
+      console.log("Playing animation: Boat");
+      this.animation.actions["Boat"].play();
+    }
+    if (this.animation.actions["Boat"]) {
+      console.log("Playing animation: Boat");
+      this.animation.actions["Boat"].play();
     }
   }
 
   update() {
-    this.animation.mixer.update(this.time.delta * 0.00008);
+    this.animation.mixer.update(this.time.delta * 0.00004);
   }
 }

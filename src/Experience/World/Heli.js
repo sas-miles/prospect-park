@@ -8,16 +8,8 @@ export default class Heli {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.time = this.experience.time;
-    this.debug = this.experience.debug;
 
-    //Debug
-    if (this.debug.active) {
-      this.debugFolder = this.debug.gui.addFolder("Heli");
-    }
-
-    //Setup
     this.resource = this.resources.items.helicopter;
-    this.resourcePath = this.resources.items.heliPath;
 
     this.setModel();
     this.setAnimation();
@@ -25,7 +17,6 @@ export default class Heli {
 
   setModel() {
     this.model = this.resource.scene;
-    console.log("heli", this.model);
     this.scene.add(this.model);
   }
 

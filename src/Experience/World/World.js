@@ -5,6 +5,7 @@ import Floor from "./Floor.js";
 import Plane from "./Plane.js";
 import Heli from "./Heli.js";
 import Car from "./Car.js";
+import Boat from "./Boat.js";
 import EventEmitter from "../Utils/EventEmitter.js";
 import CameraAnimations from "../Animations/CameraAnimations.js";
 
@@ -23,6 +24,7 @@ export default class World {
       this.environment = new Environment();
       this.heli = new Heli();
       this.car = new Car();
+      this.boat = new Boat();
       this.cameraAnimations = new CameraAnimations();
 
       this.eventEmitter.trigger("ready");
@@ -32,5 +34,6 @@ export default class World {
   update() {
     if (this.heli) this.heli.update();
     if (this.car) this.car.update();
+    if (this.boat) this.boat.update();
   }
 }
