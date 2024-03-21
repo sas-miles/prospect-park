@@ -40,10 +40,12 @@ export default class CameraAnimations {
     // Assuming initialYaw is the camera's current yaw angle
     // and finalYaw is the desired yaw angle at the end of the animation
     const initialYaw = THREE.MathUtils.degToRad(180);
-    const finalYaw = THREE.MathUtils.degToRad(-20);
+    const finalYaw = THREE.MathUtils.degToRad(0);
 
     // Object to track the progress of the path animation and yaw rotation
     const animationProgress = { path: 0, yaw: initialYaw };
+
+    let finalRotation = null;
 
     gsap
       .timeline({
@@ -52,9 +54,8 @@ export default class CameraAnimations {
           // console.log("Camera animation started");
         },
         onComplete: () => {
-          this.experience.controls.currentRotationY = finalYaw;
           this.eventEmitter.trigger("controls:enable");
-          // console.log("Camera animation complete");
+          console.log("Camera animation completed");
         },
         ease: "power2.out",
       })
@@ -63,12 +64,14 @@ export default class CameraAnimations {
         yaw: finalYaw,
         duration: 8, // Duration in seconds
         onUpdate: () => {
-          // Update camera position along the path
           const point = this.path.getPointAt(animationProgress.path);
           this.camera.position.copy(point);
-
-          // Apply the interpolated yaw rotation
           this.camera.rotation.y = animationProgress.yaw;
+
+          // Store the final position and rotation
+          if (animationProgress.path === 1) {
+            finalRotation = this.camera.rotation.clone();
+          }
         },
       });
   }
