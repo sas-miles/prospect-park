@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Experience from "./Experience";
 import EventEmitter from "./Utils/EventEmitter";
+import CameraAnimations from "./Animations/CameraAnimations";
 
 export default class Controls {
   constructor() {
@@ -10,6 +11,7 @@ export default class Controls {
     this.renderer = this.experience.renderer.instance;
     this.canvas = this.experience.canvas;
     this.camera = this.experience.camera.instance;
+    this.cameraAnimations = this.experience.world.cameraAnimations;
 
     // Define variables here
     this.isDragging = false;

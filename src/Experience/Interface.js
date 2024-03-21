@@ -40,21 +40,10 @@ export default class Interface {
     this.mousePosition = new THREE.Vector2();
     this.raycaster = new THREE.Raycaster();
 
-    // Define the materials you want to apply to different meshes
-    this.materials = {
-      Boathouse: new THREE.MeshStandardMaterial({
-        color: 0xe5e1e3,
-        roughness: 1.0,
-        metalness: 0.8,
-      }),
-      Carasouel005: new THREE.MeshLambertMaterial({ color: 0x00ff00 }), // Green material for Carasouel005
-      picnic002: new THREE.MeshPhongMaterial({ color: 0x0000ff }), // Blue material for picnic002
-    };
-
     this.createSpheresFromDOM();
     this.setRaycaster();
-    this.setLabelRenderer();
     this.setLabels();
+    this.setLabelRenderer();
     this.closeModal();
     this.setDebug();
   }
@@ -103,12 +92,9 @@ export default class Interface {
     });
 
     modelClone.position.set(x, y, z);
+    modelClone.position.y = 2.0;
     modelClone.name = name;
     modelClone.userData = { camX, camY, camZ, camRotationY };
-
-    // Assign a random phase and frequency to each sphere for organic movement
-    modelClone.userData.phase = 2 * Math.PI; // Random phase between 0 and 2π
-    modelClone.userData.frequency = 0.05; // Lower and narrow the frequency range
 
     return modelClone;
   }
@@ -121,31 +107,30 @@ export default class Interface {
 
     this.group.children.forEach((sphere) => {
       const { camX, camY, camZ, camRotationY } = sphere.userData;
+      console.log(sphere.name, sphere.userData); // Check what's inside the userData
+
       const sphereContainer = document.querySelector(
         `.sphere-container[data-label="${sphere.name}"]`
       );
 
       if (sphereContainer) {
-        const labelTarget = document.querySelector(
-          `.label-target[data-label="${sphere.name}"]`
-        );
+        const labelTargets = sphereContainer.querySelectorAll(".label-target");
 
-        if (labelTarget) {
+        labelTargets.forEach((labelTarget) => {
           const label = new CSS2DObject(labelTarget);
-          label.position.set(0, 2.0, 0);
+          label.position.set(0, 4.0, 0);
           sphere.add(label); // Attach the label to the sphere
-
           this.labels[sphere.name] = label;
 
-          // Add a click event listener to the labelTarget div
-          labelTarget.addEventListener("click", (event) => {
-            console.log(`Clicked on label for sphere: ${sphere.name}`, event);
+          labelTarget.addEventListener("click", () => {
+            console.log(`Clicked on label for sphere: ${sphere.name}`);
 
             const name = sphere.name;
 
             const targetDiv = document.querySelector(
               `div[data-content="${name}"]`
             );
+
             if (targetDiv) {
               this.pointsAnimation.animateToTarget(
                 name,
@@ -153,11 +138,11 @@ export default class Interface {
                 camX,
                 camY,
                 camZ,
-                camRotationY
+                false
               );
             }
           });
-        }
+        });
       }
     });
   }
@@ -228,13 +213,27 @@ export default class Interface {
       const intersects = this.raycaster.intersectObjects(this.group.children);
       if (intersects.length > 0) {
         const sphere = intersects[0].object;
+
         const name = sphere.name;
+
         console.log("Clicked on sphere:", name);
+
         const { camX, camY, camZ, camRotationY } = sphere.userData;
+
         const targetDiv = document.querySelector(
           `.points-of-interest_target[data-content="${name}"]`
         );
+
         if (targetDiv) {
+          console.log(
+            "Animating to target from Sphere:",
+            name,
+            targetDiv,
+            camX,
+            camY,
+            camZ,
+            this.pointsAnimation.animateToTarget
+          );
           this.pointsAnimation.animateToTarget(
             name,
             targetDiv,
@@ -266,40 +265,36 @@ export default class Interface {
         if (targetDiv) {
           this.pointsAnimation.resetAnimation();
           this.pointsAnimation.closeModal(name, targetDiv);
-
-          setTimeout(() => {
-            // this.eventEmitter.trigger("controls:enable");
-          }, 1000);
         }
       });
     });
   }
 
-  async reset() {
-    // Remove spheres from the Three.js scene and dispose of their resources
-    this.spheres.forEach((sphere) => {
-      this.group.remove(sphere);
-      if (sphere.geometry) sphere.geometry.dispose();
-      if (sphere.material) sphere.material.dispose();
-    });
-    this.spheres = []; // Clear the spheres array
+  // async reset() {
+  //   // Remove spheres from the Three.js scene and dispose of their resources
+  //   this.spheres.forEach((sphere) => {
+  //     this.group.remove(sphere);
+  //     if (sphere.geometry) sphere.geometry.dispose();
+  //     if (sphere.material) sphere.material.dispose();
+  //   });
+  //   this.spheres = []; // Clear the spheres array
 
-    // For each label, remove the CSS2DObject from its parent and the corresponding DOM element
-    Object.keys(this.labels).forEach((name) => {
-      const label = this.labels[name];
-      if (label && label.element) {
-        // Remove the label from the parent in the Three.js scene
-        if (label.parent) label.parent.remove(label);
+  //   // For each label, remove the CSS2DObject from its parent and the corresponding DOM element
+  //   Object.keys(this.labels).forEach((name) => {
+  //     const label = this.labels[name];
+  //     if (label && label.element) {
+  //       // Remove the label from the parent in the Three.js scene
+  //       if (label.parent) label.parent.remove(label);
 
-        // Remove the DOM element from its parent node
-        if (label.element.parentNode) {
-          label.element.parentNode.removeChild(label.element);
-        }
-      }
-    });
+  //       // Remove the DOM element from its parent node
+  //       if (label.element.parentNode) {
+  //         label.element.parentNode.removeChild(label.element);
+  //       }
+  //     }
+  //   });
 
-    this.labels = {}; // Clear the labels object
-  }
+  //   this.labels = {}; // Clear the labels object
+  // }
 
   updateScene() {
     // Re-setup spheres and labels based on new content
@@ -322,14 +317,6 @@ export default class Interface {
         this.experience.camera.instance
       );
     }
-
-    // Apply a more pronounced floating effect to each sphere
-    this.spheres.forEach((sphere) => {
-      const time = this.time.elapsed + sphere.userData.phase; // Use elapsed time + phase for offset
-      // Significantly increase the amplitude for a more pronounced effect
-      sphere.position.y +=
-        Math.sin(time * sphere.userData.frequency) * 0.0008 * this.time.delta; // Increased amplitude
-    });
   }
 
   setDebug() {

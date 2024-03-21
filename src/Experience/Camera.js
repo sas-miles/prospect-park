@@ -2,7 +2,6 @@ import * as THREE from "three";
 
 import Experience from "./Experience.js";
 
-
 export default class Camera {
   constructor() {
     this.experience = new Experience();
@@ -10,7 +9,6 @@ export default class Camera {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
-    
 
     if (this.debug.active) {
       this.debugFolder = this.debug.gui.addFolder("Camera");
@@ -22,13 +20,8 @@ export default class Camera {
       y: 0,
       z: 0,
     };
-    
-
-    
 
     this.setInstance();
-    
-
   }
 
   setInstance() {
@@ -52,12 +45,11 @@ export default class Camera {
     );
     this.scene.add(this.instance);
 
-
     //Debug
     if (this.debug.active) {
       this.debugFolder
         .add(this.instance.position, "x")
-        .step(.01)
+        .step(0.01)
         .min(-500)
         .max(500)
         .name("positionX")
@@ -66,7 +58,7 @@ export default class Camera {
         });
       this.debugFolder
         .add(this.instance.position, "y")
-        .step(.01)
+        .step(0.01)
         .min(-100)
         .max(100)
         .name("positionY")
@@ -75,7 +67,7 @@ export default class Camera {
         });
       this.debugFolder
         .add(this.instance.position, "z")
-        .step(.01)
+        .step(0.01)
         .min(-100)
         .max(600)
         .name("positionZ")
@@ -134,7 +126,5 @@ export default class Camera {
     this.instance.updateProjectionMatrix();
   }
 
-  update() {
-    
-  }
+  update() {}
 }
