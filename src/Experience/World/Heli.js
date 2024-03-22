@@ -28,11 +28,15 @@ export default class Heli {
 
     // Loop over the animations array and create an action for each animation
     for (const animation of this.resource.animations) {
-      console.log(`Creating action for animation: ${animation.name}`); // Log the name of the animation
-      this.animation.actions[animation.name] =
+      // Use cubic spline interpolation
+      for (const track of animation.tracks) {
+        track.setInterpolation(THREE.InterpolateSmooth);
+      }
+      this.animation.actions[animation.name] = 
         this.animation.mixer.clipAction(animation);
       this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
       console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
+      
     }
 
     // Play the animations by their names
@@ -42,12 +46,12 @@ export default class Heli {
     }
     if (this.animation.actions["helicoptor.bladesAction.001"]) {
       console.log("Playing animation: helicoptor.bladesAction.001");
-      this.animation.actions["helicoptor.bladesAction.001"].setDuration(0.1);
+      this.animation.actions["helicoptor.bladesAction.001"].setDuration(0.01);
       this.animation.actions["helicoptor.bladesAction.001"].play();
     }
   }
 
   update() {
-    this.animation.mixer.update(this.time.delta * 0.0002);
+    this.animation.mixer.update(this.time.delta * 0.0001);
   }
 }
