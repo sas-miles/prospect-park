@@ -62,7 +62,7 @@ export default class Loader {
         })
         .to(this.overlayMaterial.uniforms.uAlpha, {
           value: 0,
-          duration: 2,
+          duration: 0,
           ease: "power2.out",
         })
         .to(this.loaderDiv, {
