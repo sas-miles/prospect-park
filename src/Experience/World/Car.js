@@ -29,7 +29,7 @@ export default class Car {
     for (const animation of this.resource.animations) {
       // Use cubic spline interpolation
       for (const track of animation.tracks) {
-        // track.setInterpolation(THREE.InterpolateLinear);
+        track.setInterpolation(THREE.InterpolateLinear);
       }
       const action = this.animation.mixer.clipAction(animation);
       this.animation.actions[animation.name] = action;
