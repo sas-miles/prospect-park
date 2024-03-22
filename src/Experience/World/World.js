@@ -23,7 +23,7 @@ export default class World {
       //Setup
       // this.floor = new Floor();
       this.map = new Map();
-      // this.plane = new Plane();
+      this.plane = new Plane();
       this.environment = new Environment();
       this.heli = new Heli();
       this.car = new Car();
@@ -38,6 +38,5 @@ export default class World {
     if (this.heli) this.heli.update();
     if (this.car) this.car.update();
     if (this.boat) this.boat.update();
-    if (this.map) this.map.update();
   }
 }

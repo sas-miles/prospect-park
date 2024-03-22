@@ -20,13 +20,6 @@ export default class Interface {
     this.resource = this.resources.items.Pin;
     this.model = this.resource.scene;
 
-    // Check if the animation data is loaded
-    if (this.resource.animations && this.resource.animations.length > 0) {
-      console.log("Animation data is loaded");
-    } else {
-      console.warn("Animation data is not loaded or empty");
-    }
-
     this.eventEmitter = this.experience.eventEmitter;
 
     this.controls = this.experience.controls;
@@ -115,7 +108,6 @@ export default class Interface {
 
     this.group.children.forEach((sphere) => {
       const { camX, camY, camZ, camRotationY } = sphere.userData;
-      console.log(sphere.name, sphere.userData); // Check what's inside the userData
 
       const sphereContainer = document.querySelector(
         `.sphere-container[data-label="${sphere.name}"]`
@@ -131,8 +123,6 @@ export default class Interface {
           this.labels[sphere.name] = label;
 
           labelTarget.addEventListener("click", () => {
-            console.log(`Clicked on label for sphere: ${sphere.name}`);
-
             const name = sphere.name;
 
             const targetDiv = document.querySelector(
@@ -224,8 +214,6 @@ export default class Interface {
         const sphere = intersects[0].object;
 
         const name = sphere.name;
-
-        console.log("Clicked on sphere:", name);
 
         const { camX, camY, camZ, camRotationY } = sphere.userData;
 

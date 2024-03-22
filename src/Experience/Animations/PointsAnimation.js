@@ -19,7 +19,6 @@ export default class PointsAnimation {
     this.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
       this.initialCameraRotation = this.camera.rotation.clone();
-      console.log("Points: Received disable event");
     });
 
     this.eventEmitter.on("controls:enable", () => {
@@ -121,8 +120,6 @@ export default class PointsAnimation {
       gsap
         .timeline({
           onStart: () => {
-            console.log("POI Camera animation started");
-
             gsap.set(pointMainVisibility, {
               duration: 0,
               opacity: 1,
@@ -219,9 +216,6 @@ export default class PointsAnimation {
     // Fade out animations for modal elements
     gsap
       .timeline({
-        onStart: () => {
-          console.log(this.camera.rotation.y);
-        },
         onComplete: () => {
           // Once animation is complete, remove classes
           pointsModal.classList.remove("is-modal-visibility");
