@@ -61,6 +61,7 @@ export default class PointsAnimation {
     camX,
     camY,
     camZ,
+    camRotationY,
     requireIntersection = true
   ) {
     this.name = name;
@@ -79,16 +80,9 @@ export default class PointsAnimation {
     }
 
     if (targetDiv) {
-      this.eventEmitter.trigger("controls:disable");
-
       this.initialCameraPosition = this.camera.position.clone();
-      this.initialCameraRotation = this.camera.quaternion.clone();
-
-      // Create a new quaternion for the target rotation
-      let targetRotation = new THREE.Quaternion();
-      targetRotation.setFromEuler(
-        new THREE.Euler(0, THREE.MathUtils.degToRad(49), 0)
-      );
+      this.initialCameraRotation = this.camera.rotation.clone();
+      this.eventEmitter.trigger("controls:disable");
 
       const labelVisibility = document.querySelectorAll(".label-visibility");
 
@@ -108,6 +102,21 @@ export default class PointsAnimation {
         ".point-content-main_visibility"
       );
       pointMainVisibility.classList.add("is-active-block");
+
+      const currentRotationY = this.camera.rotation.y;
+      const targetRotationY = THREE.MathUtils.degToRad(camRotationY);
+
+      let shortestRotationDifferenceY =
+        ((targetRotationY - currentRotationY + Math.PI) % (2 * Math.PI)) -
+        Math.PI;
+
+      // Ensure the rotation difference is within a reasonable range
+      if (Math.abs(shortestRotationDifferenceY) > Math.PI) {
+        shortestRotationDifferenceY =
+          shortestRotationDifferenceY > 0
+            ? shortestRotationDifferenceY - 2 * Math.PI
+            : shortestRotationDifferenceY + 2 * Math.PI;
+      }
 
       gsap
         .timeline({
@@ -131,19 +140,12 @@ export default class PointsAnimation {
             x: camX,
             y: camY,
             z: camZ,
-            ease: "power1.out", // Easing function
-          },
-          0
-        )
-        .to(
-          this.camera.quaternion,
-          {
-            duration: 1,
-            x: targetRotation.x,
-            y: targetRotation.y,
-            z: targetRotation.z,
-            w: targetRotation.w,
             ease: "power1.out",
+            onUpdate: () => {
+              // Incrementally update the camera's rotation around Y-axis
+              // using the shortest rotation difference
+              this.camera.rotation.y += shortestRotationDifferenceY * 0.02;
+            },
           },
           0
         )
@@ -167,6 +169,9 @@ export default class PointsAnimation {
         z: this.initialCameraPosition.z,
         ease: "power1.inOut",
       });
+
+      // Reset the camera's rotation to the initial rotation
+      this.camera.rotation.copy(this.initialCameraRotation);
     }
   }
 
@@ -179,6 +184,9 @@ export default class PointsAnimation {
       ".point-content-main_visibility"
     );
     const labelVisibility = document.querySelectorAll(".label-visibility");
+
+    // Store the initial camera rotation around the Y-axis
+    const initialCameraRotationY = this.camera.rotation.y;
 
     // Fade out animations for modal elements
     gsap
@@ -193,6 +201,9 @@ export default class PointsAnimation {
             label.classList.add("is-active-block")
           );
 
+          // Reset the camera's rotation around the Y-axis to the initial value
+          this.camera.rotation.y = initialCameraRotationY;
+
           // Emit event to re-enable controls if they were disabled
           this.eventEmitter.trigger("controls:enable");
         },
@@ -204,6 +215,26 @@ export default class PointsAnimation {
           opacity: 0,
           x: "40vw",
           ease: "power1.out",
+          onUpdate: () => {
+            // Calculate the shortest rotation difference
+            const currentRotationY = this.camera.rotation.y;
+            const targetRotationY = initialCameraRotationY;
+            let shortestRotationDifferenceY =
+              ((targetRotationY - currentRotationY + Math.PI) % (2 * Math.PI)) -
+              Math.PI;
+
+            // Ensure the rotation difference is within a reasonable range
+            if (Math.abs(shortestRotationDifferenceY) > Math.PI) {
+              shortestRotationDifferenceY =
+                shortestRotationDifferenceY > 0
+                  ? shortestRotationDifferenceY - 2 * Math.PI
+                  : shortestRotationDifferenceY + 2 * Math.PI;
+            }
+
+            // Incrementally update the camera's rotation around Y-axis
+            // using the shortest rotation difference
+            this.camera.rotation.y += shortestRotationDifferenceY * 0.02;
+          },
         },
         0
       );

@@ -57,10 +57,7 @@ export default class Controls {
 
     this.experience.eventEmitter.on("controls:enable", () => {
       this.isAnimationActive = false;
-      if (this.finalRotation) {
-        this.camera.rotation.copy(this.finalRotation);
-        this.currentRotationY = this.finalRotation.y;
-      }
+      this.currentRotationY = 0;
     });
   }
 

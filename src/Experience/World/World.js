@@ -35,5 +35,6 @@ export default class World {
     if (this.heli) this.heli.update();
     if (this.car) this.car.update();
     if (this.boat) this.boat.update();
+    if (this.map) this.map.update();
   }
 }

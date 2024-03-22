@@ -81,6 +81,7 @@ export default class Interface {
 
   createSphere(x, y, z, camX, camY, camZ, camRotationY, name) {
     const modelClone = this.model.clone();
+
     modelClone.traverse(function (child) {
       if (child.isMesh) {
         child.material = child.material.clone(); // Optionally clone the material if needed
@@ -95,6 +96,27 @@ export default class Interface {
     modelClone.position.y = 2.0;
     modelClone.name = name;
     modelClone.userData = { camX, camY, camZ, camRotationY };
+
+    this.animation = {};
+    this.animation.mixer = new THREE.AnimationMixer(modelClone);
+    this.animation.actions = {};
+
+    // Loop over the animations array and create an action for each animation
+    for (const animation of this.resource.animations) {
+      console.log(`Creating action for animation: ${animation.name}`); // Log the name of the animation
+      this.animation.actions[animation.name] =
+        this.animation.mixer.clipAction(animation);
+      this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
+      console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
+    }
+
+    // Play the animations by their names
+    if (this.animation.actions["ConeAction"]) {
+      this.animation.actions["ConeAction"].play();
+    }
+    if (this.animation.actions["ConeAction"]) {
+      this.animation.actions["ConeAction"].play();
+    }
 
     return modelClone;
   }
@@ -138,6 +160,7 @@ export default class Interface {
                 camX,
                 camY,
                 camZ,
+                camRotationY,
                 false
               );
             }
@@ -225,15 +248,6 @@ export default class Interface {
         );
 
         if (targetDiv) {
-          console.log(
-            "Animating to target from Sphere:",
-            name,
-            targetDiv,
-            camX,
-            camY,
-            camZ,
-            this.pointsAnimation.animateToTarget
-          );
           this.pointsAnimation.animateToTarget(
             name,
             targetDiv,
@@ -317,6 +331,8 @@ export default class Interface {
         this.experience.camera.instance
       );
     }
+
+    this.animation.mixer.update(this.time.delta * 0.0002);
   }
 
   setDebug() {
