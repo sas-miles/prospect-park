@@ -20,6 +20,13 @@ export default class Interface {
     this.resource = this.resources.items.Pin;
     this.model = this.resource.scene;
 
+    // Check if the animation data is loaded
+    if (this.resource.animations && this.resource.animations.length > 0) {
+      console.log("Animation data is loaded");
+    } else {
+      console.warn("Animation data is not loaded or empty");
+    }
+
     this.eventEmitter = this.experience.eventEmitter;
 
     this.controls = this.experience.controls;
@@ -96,27 +103,6 @@ export default class Interface {
     modelClone.position.y = 2.0;
     modelClone.name = name;
     modelClone.userData = { camX, camY, camZ, camRotationY };
-
-    this.animation = {};
-    this.animation.mixer = new THREE.AnimationMixer(modelClone);
-    this.animation.actions = {};
-
-    // Loop over the animations array and create an action for each animation
-    for (const animation of this.resource.animations) {
-      console.log(`Creating action for animation: ${animation.name}`); // Log the name of the animation
-      this.animation.actions[animation.name] =
-        this.animation.mixer.clipAction(animation);
-      this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
-      console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
-    }
-
-    // Play the animations by their names
-    if (this.animation.actions["ConeAction"]) {
-      this.animation.actions["ConeAction"].play();
-    }
-    if (this.animation.actions["ConeAction"]) {
-      this.animation.actions["ConeAction"].play();
-    }
 
     return modelClone;
   }
@@ -331,8 +317,6 @@ export default class Interface {
         this.experience.camera.instance
       );
     }
-
-    this.animation.mixer.update(this.time.delta * 0.0002);
   }
 
   setDebug() {

@@ -22,7 +22,9 @@ export default class Resources extends EventEmitter {
     this.loaders = {};
     this.loaders.gltfLoader = new GLTFLoader();
     this.DRACOLoader = new DRACOLoader();
-    this.DRACOLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    this.DRACOLoader.setDecoderPath(
+      "https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
+    );
     this.loaders.gltfLoader.setDRACOLoader(this.DRACOLoader);
     this.loaders.textureLoader = new THREE.TextureLoader();
     this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -38,7 +40,6 @@ export default class Resources extends EventEmitter {
               // console.log(`[${source.name}] Animation ${index}: ${clip.name}`);
             });
 
-            
             this.sourceLoaded(source, file);
           });
           break;
@@ -77,7 +78,6 @@ export default class Resources extends EventEmitter {
       }
     }
   }
-  
 
   sourceLoaded(source, file) {
     this.items[source.name] = file;
@@ -87,7 +87,7 @@ export default class Resources extends EventEmitter {
     const progress = this.loaded / this.toLoad;
 
     // Emit a progress event with the calculated progress
-    this.trigger("progress", progress);
+    this.trigger("progress", [progress]);
 
     if (this.loaded === this.toLoad) {
       this.trigger("ready");
