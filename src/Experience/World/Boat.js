@@ -38,7 +38,7 @@ export default class Boat {
         this.animation.mixer.clipAction(animation);
       this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
       // Set the timeScale based on the desired duration
-      const desiredDuration = 500; // The desired duration in seconds
+      // const desiredDuration = 500; // The desired duration in seconds
       console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
     }
 
