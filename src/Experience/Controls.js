@@ -57,7 +57,7 @@ export default class Controls {
 
     this.experience.eventEmitter.on("controls:enable", () => {
       this.isAnimationActive = false;
-      this.currentRotationY = 0;
+      // this.currentRotationY = 0;
     });
   }
 

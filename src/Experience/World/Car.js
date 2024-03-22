@@ -26,7 +26,6 @@ export default class Car {
 
     this.animation.actions = {};
 
-    // Loop over the animations array and create an action for each animation
     for (const animation of this.resource.animations) {
       // Use cubic spline interpolation
       for (const track of animation.tracks) {
