@@ -46,6 +46,6 @@ export default class Car {
   }
 
   update() {
-    this.animation.mixer.update(this.time.delta * .0001);
+    this.animation.mixer.update(this.time.delta * .001);
   }
 }
