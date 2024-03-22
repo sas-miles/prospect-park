@@ -30,7 +30,7 @@ export default class Heli {
     for (const animation of this.resource.animations) {
       // Use cubic spline interpolation
       for (const track of animation.tracks) {
-        track.setInterpolation(THREE.InterpolateSmooth);
+        // track.setInterpolation(THREE.InterpolateSmooth);
       }
       this.animation.actions[animation.name] = 
         this.animation.mixer.clipAction(animation);

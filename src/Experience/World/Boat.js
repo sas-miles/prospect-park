@@ -31,7 +31,7 @@ export default class Boat {
     for (const animation of this.resource.animations) {
        // Use cubic spline interpolation
         for (const track of animation.tracks) {
-         track.setInterpolation(THREE.InterpolateSmooth);
+        //  track.setInterpolation(THREE.InterpolateSmooth);
         }
       console.log(`Creating action for animation: ${animation.name}`); // Log the name of the animation
       this.animation.actions[animation.name] =
