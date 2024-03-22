@@ -57,6 +57,7 @@ export default class Map {
         alpha: { value: 0.4 },
       },
       transparent: true,
+      wireframe: true,
     });
 
     const mesh = this.model.getObjectByName(meshName);
