@@ -50,11 +50,11 @@ export default class Map {
       fragmentShader: waterFragment,
       uniforms: {
         time: { value: 0.0 },
-        amplitude: { value: 0.2 }, // Adjust the amplitude for more/less wave height
-        frequency: { value: new THREE.Vector2(0.7, 0.5) }, // Adjust frequency for tighter/looser waves
+        amplitude: { value: 0.04 }, // Adjust the amplitude for more/less wave height
+        frequency: { value: new THREE.Vector2(1.9, 2.5) }, // Adjust frequency for tighter/looser waves
         speed: { value: 2.5 }, // Adjust speed for faster/slower wave animation
-        waterColor: { value: new THREE.Color("deepskyblue") },
-        alpha: { value: 0.8 },
+        waterColor: { value: new THREE.Color("#CED5FF") },
+        alpha: { value: 0.4 },
       },
       transparent: true,
     });
