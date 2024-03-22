@@ -8,14 +8,9 @@ export default class Map {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
-    this.time = this.experience.time; // Make sure this provides a continuously updating time value
+    this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.sizes = this.experience.sizes;
-
-    // Debugging tools setup
-    // if(this.debug.active){
-    //     this.debugFolder = this.debug.gui.addFolder('Map');
-    // }
 
     this.resource = this.resources.items.map;
     this.setModel();

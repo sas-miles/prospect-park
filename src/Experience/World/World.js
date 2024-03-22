@@ -23,7 +23,7 @@ export default class World {
       //Setup
       // this.floor = new Floor();
       this.map = new Map();
-      this.plane = new Plane();
+      // this.plane = new Plane();
       this.environment = new Environment();
       this.heli = new Heli();
       this.car = new Car();
