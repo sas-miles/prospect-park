@@ -32,20 +32,16 @@ export default class Heli {
       for (const track of animation.tracks) {
         // track.setInterpolation(THREE.InterpolateSmooth);
       }
-      this.animation.actions[animation.name] = 
+      this.animation.actions[animation.name] =
         this.animation.mixer.clipAction(animation);
       this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
-      console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
-      
     }
 
     // Play the animations by their names
     if (this.animation.actions["helicoptor"]) {
-      console.log("Playing animation: helicoptor");
       this.animation.actions["helicoptor"].play();
     }
     if (this.animation.actions["helicoptor.bladesAction.001"]) {
-      console.log("Playing animation: helicoptor.bladesAction.001");
       this.animation.actions["helicoptor.bladesAction.001"].setDuration(0.01);
       this.animation.actions["helicoptor.bladesAction.001"].play();
     }

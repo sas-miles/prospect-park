@@ -37,15 +37,13 @@ export default class Car {
       // Set the timeScale based on the desired duration
       // const desiredDuration = 50; // The desired duration in seconds
       // action.timeScale = animation.duration / desiredDuration;
-      console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
     }
     if (this.animation.actions["car"]) {
-      console.log("Playing animation: car");
       this.animation.actions["car"].play();
     }
   }
 
   update() {
-    this.animation.mixer.update(this.time.delta * .001);
+    this.animation.mixer.update(this.time.delta * 0.001);
   }
 }

@@ -55,7 +55,7 @@ export default class CameraAnimations {
         },
         onComplete: () => {
           this.eventEmitter.trigger("controls:enable");
-          console.log("Camera animation completed");
+          // console.log("Camera animation completed");
         },
         ease: "power2.out",
       })

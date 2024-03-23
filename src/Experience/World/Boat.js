@@ -29,26 +29,22 @@ export default class Boat {
 
     // Loop over the animations array and create an action for each animation
     for (const animation of this.resource.animations) {
-       // Use cubic spline interpolation
-        for (const track of animation.tracks) {
+      // Use cubic spline interpolation
+      for (const track of animation.tracks) {
         //  track.setInterpolation(THREE.InterpolateSmooth);
-        }
-      console.log(`Creating action for animation: ${animation.name}`); // Log the name of the animation
+      }
       this.animation.actions[animation.name] =
         this.animation.mixer.clipAction(animation);
       this.animation.actions[animation.name].setLoop(THREE.LoopRepeat);
       // Set the timeScale based on the desired duration
       // const desiredDuration = 500; // The desired duration in seconds
-      console.log(`Action created: ${this.animation.actions[animation.name]}`); // Log the created action
     }
 
     // Play the animations by their names
     if (this.animation.actions["Boat"]) {
-      console.log("Playing animation: Boat");
       this.animation.actions["Boat"].play();
     }
     if (this.animation.actions["Boat"]) {
-      console.log("Playing animation: Boat");
       this.animation.actions["Boat"].play();
     }
   }

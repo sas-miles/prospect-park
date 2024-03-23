@@ -1,7 +1,7 @@
 import * as THREE from "three";
+import gsap from "gsap";
+
 import Experience from "./Experience";
-import EventEmitter from "./Utils/EventEmitter";
-import CameraAnimations from "./Animations/CameraAnimations";
 
 export default class Controls {
   constructor() {
@@ -47,7 +47,11 @@ export default class Controls {
       maxZ: 100,
     };
 
+    this.customCursorElement = document.querySelector(".custom-cursor");
+    this.secondaryCursorElement = document.querySelector(".secondary-cursor");
     this.setControls();
+    this.initCursorEvents();
+    this.initGlobalCursorEvents();
 
     this.experience.eventEmitter.on("controls:disable", () => {
       this.isAnimationActive = true;
@@ -74,9 +78,30 @@ export default class Controls {
       this.isDragging = true;
       this.dragStart.x = clientX;
       this.dragStart.y = clientY;
+
+      if (this.customCursorElement) {
+        gsap.to(this.customCursorElement, {
+          scale: 1.2,
+          duration: 0.3, // Adjust duration to control the speed of the scaling animation
+          transformOrigin: "center center", // Ensures scaling is centered
+        });
+      }
     };
 
     const handleMouseMove = (clientX, clientY) => {
+      if (!this.customCursorElement) return;
+
+      gsap.to(this.customCursorElement, {
+        x: clientX,
+        y: clientY,
+        duration: 0.1, // A shorter duration for movement to closely follow the mouse
+        ease: "power1.out", // Use an easing function for smoother movement
+      });
+
+      // Maintain the scale if dragging
+      let scaleTransform = this.isDragging ? " scale(1.2)" : " scale(1)";
+      this.customCursorElement.style.transform = `translate(-50%, -50%)${scaleTransform}`;
+
       if (this.isDragging) {
         const deltaX = clientX - this.dragStart.x;
 
@@ -106,6 +131,14 @@ export default class Controls {
 
     window.addEventListener("mouseup", () => {
       this.isDragging = false;
+
+      if (this.customCursorElement) {
+        gsap.to(this.customCursorElement, {
+          scale: 1,
+          duration: 0.3, // Match the duration with the mouse down animation for consistency
+          transformOrigin: "center center",
+        });
+      }
     });
 
     this.renderer.domElement.addEventListener("mousemove", (event) => {
@@ -143,6 +176,65 @@ export default class Controls {
     window.addEventListener("touchend", () => {
       this.isDragging = false;
     });
+
+    // Attach to the document or canvas instead
+    document.addEventListener("mouseleave", () => {
+      if (this.customCursorElement)
+        this.customCursorElement.style.opacity = "0";
+    });
+
+    document.addEventListener("mouseenter", () => {
+      if (this.customCursorElement)
+        this.customCursorElement.style.opacity = "1";
+    });
+  }
+
+  initCursorEvents() {
+    document.addEventListener("mousemove", (e) => {
+      // Continue to move both cursors with the mouse
+      gsap.to([this.customCursorElement, this.secondaryCursorElement], {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1,
+        ease: "power1.out",
+      });
+    });
+
+    this.canvas.addEventListener("mouseenter", () => {
+      // Fade in the custom cursor and fade out the secondary cursor
+      gsap.to(this.secondaryCursorElement, {
+        opacity: 0,
+        duration: 0.25,
+        scale: 1,
+      });
+      gsap.to(this.customCursorElement, { opacity: 1, duration: 0.25 });
+    });
+
+    this.canvas.addEventListener("mouseleave", () => {
+      // Reverse the fade directions when leaving the canvas
+      gsap.to(this.customCursorElement, { opacity: 0, duration: 0.25 });
+      gsap.to(this.secondaryCursorElement, {
+        opacity: 1,
+        duration: 0.25,
+        scale: 0.8,
+      });
+    });
+  }
+
+  initGlobalCursorEvents() {
+    document.addEventListener("mousemove", (e) => {
+      let isOverCanvas = this.canvas.contains(
+        document.elementFromPoint(e.clientX, e.clientY)
+      );
+      // Simplify the logic to adjust opacity based on whether the cursor is over the canvas or not
+      if (isOverCanvas) {
+        gsap.to(this.customCursorElement, { opacity: 1, duration: 0.25 });
+        gsap.to(this.secondaryCursorElement, { opacity: 0, duration: 0.25 });
+      } else {
+        gsap.to(this.customCursorElement, { opacity: 0, duration: 0.25 });
+        gsap.to(this.secondaryCursorElement, { opacity: 1, duration: 0.25 });
+      }
+    });
   }
 
   enableCustomControls(markerPosition) {
@@ -156,6 +248,12 @@ export default class Controls {
     this.isCustomControlEnabled = false;
     // Reset target position if necessary
     this.targetMarkerPosition.set(0, 0, 0);
+  }
+
+  updateCustomCursor() {
+    if (!this.customCursorElement) return; // Ensure the custom cursor element is defined
+
+    // Further adjustments can be made here based on camera orientation and position
   }
 
   update() {
