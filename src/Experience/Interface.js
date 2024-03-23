@@ -258,32 +258,6 @@ export default class Interface {
     });
   }
 
-  // async reset() {
-  //   // Remove spheres from the Three.js scene and dispose of their resources
-  //   this.spheres.forEach((sphere) => {
-  //     this.group.remove(sphere);
-  //     if (sphere.geometry) sphere.geometry.dispose();
-  //     if (sphere.material) sphere.material.dispose();
-  //   });
-  //   this.spheres = []; // Clear the spheres array
-
-  //   // For each label, remove the CSS2DObject from its parent and the corresponding DOM element
-  //   Object.keys(this.labels).forEach((name) => {
-  //     const label = this.labels[name];
-  //     if (label && label.element) {
-  //       // Remove the label from the parent in the Three.js scene
-  //       if (label.parent) label.parent.remove(label);
-
-  //       // Remove the DOM element from its parent node
-  //       if (label.element.parentNode) {
-  //         label.element.parentNode.removeChild(label.element);
-  //       }
-  //     }
-  //   });
-
-  //   this.labels = {}; // Clear the labels object
-  // }
-
   updateScene() {
     // Re-setup spheres and labels based on new content
     this.setSphereGroup();
