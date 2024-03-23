@@ -132,20 +132,20 @@ export default class PointsAnimation {
         .to(
           this.camera.position,
           {
-            duration: 1, // Animation duration in seconds
+            duration: 2, // Animation duration in seconds
             x: camX,
             y: camY,
             z: camZ,
-            ease: "power1.out",
+            ease: "power2.out",
           },
           0
         )
         .to(
           this.camera.rotation,
           {
-            duration: 1, // Animation duration in seconds
+            duration: 2, // Animation duration in seconds
             y: `+=${shortestRotationDifferenceY}`,
-            ease: "power1.out",
+            ease: "power2.out",
           },
           0
         )
@@ -167,7 +167,7 @@ export default class PointsAnimation {
         x: this.initialCameraPosition.x,
         y: this.initialCameraPosition.y,
         z: this.initialCameraPosition.z,
-        ease: "power1.inOut",
+        ease: "power1.out",
       });
 
       // Calculate the shortest rotation difference

@@ -19,14 +19,14 @@ export default class PostProcessing {
     this.effectComposer = new EffectComposer(this.renderer.instance);
     this.renderPass = new RenderPass();
     this.shaderPass = new ShaderPass();
-    this.bloom = new UnrealBloomPass();
+    // this.bloom = new UnrealBloomPass();
     this.gamma = new ShaderPass(GammaCorrectionShader);
     this.debug = this.experience.debug;
 
     this.setEffectComposer();
     this.setRenderPass();
     this.setVignette();
-    this.setBloom();
+    // this.setBloom();
     this.addPasses();
   }
 
@@ -66,7 +66,7 @@ export default class PostProcessing {
 
   addPasses() {
     this.effectComposer.addPass(this.renderPass);
-    this.effectComposer.addPass(this.bloom);
+    // this.effectComposer.addPass(this.bloom);
     this.effectComposer.addPass(this.vignetteShader);
     this.effectComposer.addPass(this.gamma);
   }

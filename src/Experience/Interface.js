@@ -38,10 +38,10 @@ export default class Interface {
     this.pointsAnimation = new PointsAnimation(this.spheres, this.labels);
 
     this.mousePosition = new THREE.Vector2();
-    this.raycaster = new THREE.Raycaster();
+    // this.raycaster = new THREE.Raycaster();
 
     this.createSpheresFromDOM();
-    this.setRaycaster();
+    // this.setRaycaster();
     this.setLabels();
     this.setLabelRenderer();
     this.closeModal();
@@ -85,8 +85,6 @@ export default class Interface {
     modelClone.traverse(function (child) {
       if (child.isMesh) {
         child.material = child.material.clone(); // Optionally clone the material if needed
-        child.castShadow = true; // If you're using shadows
-        child.receiveShadow = true; // If you're using shadows
         child.name = name;
         child.userData = { camX, camY, camZ, camRotationY };
       }
@@ -101,11 +99,6 @@ export default class Interface {
   }
 
   setLabels() {
-    if (!this.pointsAnimation) {
-      console.error("pointsAnimation is not defined");
-      return;
-    }
-
     this.group.children.forEach((sphere) => {
       const { camX, camY, camZ, camRotationY } = sphere.userData;
 
@@ -264,7 +257,7 @@ export default class Interface {
     this.setLabels();
 
     // Re-setup event listeners for interaction
-    this.setRaycaster();
+    // this.setRaycaster();
     this.closeModal();
   }
 

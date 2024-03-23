@@ -37,7 +37,7 @@ export default class Experience {
     this.renderer = new Renderer();
     this.world = new World();
     this.eventEmitter = new EventEmitter();
-    this.postProcessing = new PostProcessing();
+    // this.postProcessing = new PostProcessing();
 
     this.controls = new Controls();
 
@@ -60,7 +60,7 @@ export default class Experience {
     this.camera.resize();
     this.interface.resize();
     this.renderer.resize();
-    this.postProcessing.resize();
+    // this.postProcessing.resize();
   }
 
   update() {
@@ -75,7 +75,7 @@ export default class Experience {
     if (this.interface) {
       this.interface.update();
     }
-    this.postProcessing.update();
+    // this.postProcessing.update();
   }
 
   //Ideally call this on each class
