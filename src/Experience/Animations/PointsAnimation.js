@@ -24,6 +24,8 @@ export default class PointsAnimation {
     this.eventEmitter.on("controls:enable", () => {
       this.isAnimationActive = false;
       this.introAnimation();
+
+      this.initialCameraRotation = this.camera.rotation.y;
     });
   }
 
@@ -158,8 +160,6 @@ export default class PointsAnimation {
 
   resetAnimation() {
     if (this.initialCameraPosition) {
-      // Emit event to re-enable controls if they were disabled
-      this.eventEmitter.trigger("controls:enable");
       this.closeModal(this.name, this.targetDiv);
 
       gsap.to(this.camera.position, {
@@ -186,19 +186,14 @@ export default class PointsAnimation {
             : shortestRotationDifferenceY + 2 * Math.PI;
       }
 
-      gsap.to(this.camera.position, {
-        duration: 2,
-        x: this.initialCameraPosition.x,
-        y: this.initialCameraPosition.y,
-        z: this.initialCameraPosition.z,
-        ease: "power1.inOut",
-      });
-
       // Animate the camera's rotation
       gsap.to(this.camera.rotation, {
         duration: 2,
         y: `+=${shortestRotationDifferenceY}`,
         ease: "power1.inOut",
+        onComplete: () => {
+          this.eventEmitter.trigger("controls:enable");
+        },
       });
     }
   }
