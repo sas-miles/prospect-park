@@ -38,10 +38,8 @@ export default class Interface {
     this.pointsAnimation = new PointsAnimation(this.spheres, this.labels);
 
     this.mousePosition = new THREE.Vector2();
-    // this.raycaster = new THREE.Raycaster();
 
     this.createSpheresFromDOM();
-    // this.setRaycaster();
     this.setLabels();
     this.setLabelRenderer();
     this.closeModal();
@@ -84,7 +82,7 @@ export default class Interface {
 
     modelClone.traverse(function (child) {
       if (child.isMesh) {
-        child.material = child.material.clone(); // Optionally clone the material if needed
+        child.material = child.material.clone();
         child.name = name;
         child.userData = { camX, camY, camZ, camRotationY };
       }
@@ -112,7 +110,7 @@ export default class Interface {
         labelTargets.forEach((labelTarget) => {
           const label = new CSS2DObject(labelTarget);
           label.position.set(0, 4.0, 0);
-          sphere.add(label); // Attach the label to the sphere
+          sphere.add(label);
           this.labels[sphere.name] = label;
 
           labelTarget.addEventListener("click", () => {
@@ -146,105 +144,16 @@ export default class Interface {
     document.body.appendChild(this.labelRenderer.domElement);
   }
 
-  setRaycaster() {
-    const hoverRaycast = (event) => {
-      if (event.target.tagName.toLowerCase() === "a") {
-        return;
-      }
-
-      let clientX, clientY;
-
-      if (event.type.includes("touch")) {
-        const touch = event.touches[0] || event.changedTouches[0];
-        clientX = touch.clientX;
-        clientY = touch.clientY;
-      } else {
-        clientX = event.clientX;
-        clientY = event.clientY;
-      }
-
-      this.mousePosition.x = (clientX / this.sizes.width) * 2 - 1;
-      this.mousePosition.y = -(clientY / this.sizes.height) * 2 + 1;
-
-      this.raycaster.setFromCamera(
-        this.mousePosition,
-        this.experience.camera.instance
-      );
-
-      const intersects = this.raycaster.intersectObjects(this.group.children);
-      if (intersects.length > 0) {
-        const sphere = intersects[0].object;
-        const name = sphere.name;
-      }
-    };
-
-    const raycast = (event) => {
-      if (event.target.tagName.toLowerCase() === "a") {
-        return;
-      }
-
-      let clientX, clientY;
-
-      if (event.type.includes("touch")) {
-        const touch = event.touches[0] || event.changedTouches[0];
-        clientX = touch.clientX;
-        clientY = touch.clientY;
-      } else {
-        clientX = event.clientX;
-        clientY = event.clientY;
-      }
-
-      this.mousePosition.x = (clientX / this.sizes.width) * 2 - 1;
-      this.mousePosition.y = -(clientY / this.sizes.height) * 2 + 1;
-
-      this.raycaster.setFromCamera(
-        this.mousePosition,
-        this.experience.camera.instance
-      );
-
-      const intersects = this.raycaster.intersectObjects(this.group.children);
-      if (intersects.length > 0) {
-        const sphere = intersects[0].object;
-
-        const name = sphere.name;
-
-        const { camX, camY, camZ, camRotationY } = sphere.userData;
-
-        const targetDiv = document.querySelector(
-          `.points-of-interest_target[data-content="${name}"]`
-        );
-
-        if (targetDiv) {
-          this.pointsAnimation.animateToTarget(
-            name,
-            targetDiv,
-            camX,
-            camY,
-            camZ,
-            camRotationY
-          );
-        }
-      }
-    };
-
-    window.addEventListener("mousemove", hoverRaycast);
-    window.addEventListener("click", raycast);
-    window.addEventListener("touchend", raycast, { passive: false });
-  }
-
   closeModal() {
     document.querySelectorAll(".marker-close").forEach((closeButton) => {
       closeButton.addEventListener("click", async (event) => {
         event.stopPropagation();
-        const sphereContainer = document.querySelector(".sphere-container");
-        const name = sphereContainer.getAttribute("data-label");
 
-        const targetDiv = document.querySelector(
-          `.points-of-interest_target[data-content="${name}"]`
-        );
+        const targetDiv = closeButton.closest(".points-of-interest_target");
 
-        if (targetDiv) {
-          this.pointsAnimation.resetAnimation();
+        const name = targetDiv.getAttribute("data-content");
+
+        if (name) {
           this.pointsAnimation.closeModal(name, targetDiv);
         }
       });
@@ -252,13 +161,8 @@ export default class Interface {
   }
 
   updateScene() {
-    // Re-setup spheres and labels based on new content
     this.setSphereGroup();
     this.setLabels();
-
-    // Re-setup event listeners for interaction
-    // this.setRaycaster();
-    this.closeModal();
   }
 
   resize() {

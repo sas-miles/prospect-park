@@ -68,18 +68,6 @@ export default class PointsAnimation {
     this.name = name;
     this.targetDiv = targetDiv;
 
-    if (requireIntersection) {
-      const intersects = this.experience.interface.raycaster.intersectObjects(
-        this.experience.interface.group.children
-      );
-
-      if (intersects.length > 0) {
-        name = intersects[0].object.name;
-      } else {
-        return; // No intersection, so exit the function
-      }
-    }
-
     if (targetDiv) {
       this.initialCameraPosition = this.camera.position.clone();
       this.initialCameraRotation = this.camera.rotation.clone();
@@ -89,7 +77,18 @@ export default class PointsAnimation {
 
       // Label Visibility - Hide for all
       labelVisibility.forEach((label) => {
-        label.classList.remove("is-active-block");
+        gsap
+          .timeline({
+            onComplete: () => {
+              label.classList.remove("is-active-block");
+            },
+          })
+          .to(label, {
+            duration: 0.5,
+            opacity: 0,
+            y: 3,
+            ease: "power1.in",
+          });
       });
 
       // Points Modal Visibility - Set up to show
@@ -158,10 +157,46 @@ export default class PointsAnimation {
     }
   }
 
+  closeModal(name, targetDiv) {
+    // Select the elements with classes that were modified during the modal display
+    const pointsModal = targetDiv.querySelector(
+      ".point-content-modal_visibility"
+    );
+    const pointMainVisibility = targetDiv.querySelector(
+      ".point-content-main_visibility"
+    );
+    const labelVisibility = document.querySelectorAll(".label-visibility");
+
+    // Fade out animations for modal elements
+    gsap
+      .timeline({
+        onComplete: () => {
+          // Once animation is complete, remove classes
+          pointsModal.classList.remove("is-modal-visibility");
+          pointMainVisibility.classList.remove("is-active-block");
+
+          // Revert label visibility to its initial state
+          labelVisibility.forEach((label) =>
+            label.classList.add("is-active-block")
+          );
+
+          this.resetAnimation();
+        },
+      })
+      .to(
+        pointsModal,
+        {
+          duration: 0.5,
+          opacity: 0,
+          x: "40vw",
+          ease: "power1.out",
+        },
+        0
+      );
+  }
+
   resetAnimation() {
     if (this.initialCameraPosition) {
-      this.closeModal(this.name, this.targetDiv);
-
       gsap.to(this.camera.position, {
         duration: 2,
         x: this.initialCameraPosition.x,
@@ -196,41 +231,5 @@ export default class PointsAnimation {
         },
       });
     }
-  }
-
-  closeModal(name, targetDiv) {
-    // Select the elements with classes that were modified during the modal display
-    const pointsModal = targetDiv.querySelector(
-      ".point-content-modal_visibility"
-    );
-    const pointMainVisibility = targetDiv.querySelector(
-      ".point-content-main_visibility"
-    );
-    const labelVisibility = document.querySelectorAll(".label-visibility");
-
-    // Fade out animations for modal elements
-    gsap
-      .timeline({
-        onComplete: () => {
-          // Once animation is complete, remove classes
-          pointsModal.classList.remove("is-modal-visibility");
-          pointMainVisibility.classList.remove("is-active-block");
-
-          // Revert label visibility to its initial state
-          labelVisibility.forEach((label) =>
-            label.classList.add("is-active-block")
-          );
-        },
-      })
-      .to(
-        pointsModal,
-        {
-          duration: 0.5,
-          opacity: 0,
-          x: "40vw",
-          ease: "power1.out",
-        },
-        0
-      );
   }
 }
