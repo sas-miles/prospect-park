@@ -202,7 +202,7 @@ export default class PointsAnimation {
         x: this.initialCameraPosition.x,
         y: this.initialCameraPosition.y,
         z: this.initialCameraPosition.z,
-        ease: "power1.out",
+        ease: "power1.inOut",
       });
 
       // Calculate the shortest rotation difference

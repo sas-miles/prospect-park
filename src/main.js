@@ -7,6 +7,8 @@ window.Webflow ||= [];
 window.Webflow.push(async () => {
   const experience = new Experience(document.querySelector("canvas.webgl"));
 
+  // Custom Cursor
+
   barba.init({
     transitions: [
       {
