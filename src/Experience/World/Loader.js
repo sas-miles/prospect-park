@@ -65,10 +65,24 @@ export default class Loader {
           duration: 0,
           ease: "power2.out",
         })
-        .to(this.loaderDiv, {
+        .to(this.loadingBar, {
+          delay: 0.5,
           opacity: 0,
           duration: 1,
-          ease: "power2.out",
+          x: 100,
+          ease: "power2.inOut",
+        })
+        .to(this.loadingCounter, {
+          opacity: 0,
+          duration: 1,
+          y: -10,
+          ease: "power2.inOut",
+        })
+        .to(this.loaderDiv, {
+          opacity: 0,
+          duration: 2,
+          delay: -0.7,
+          ease: "power2.inOut",
         });
     });
   }
