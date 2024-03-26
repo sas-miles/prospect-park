@@ -8,7 +8,7 @@ export default class Environment {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.debug = this.experience.debug;
-    this.fog = new THREE.FogExp2( 0xffffff, .0015);
+    this.fog = new THREE.FogExp2( 0xffffff, .0065);
 
     // //Debug
     // if(this.debug.active){
@@ -26,7 +26,7 @@ export default class Environment {
   }
 
   setAmbientLight() {
-    this.ambientLight = new THREE.AmbientLight("#cce6ff", 1.5);
+    this.ambientLight = new THREE.AmbientLight("#54ABFF", 1.5);
     this.scene.add(this.ambientLight);
 
     // //Debug
@@ -84,7 +84,7 @@ export default class Environment {
 
   setEnvironmentMap() {
     this.environmentMap = {};
-    this.environmentMap.intensity = 0.6;
+    this.environmentMap.intensity = 1.0;
     this.environmentMap.texture = this.resources.items.environmentMapTexture;
     this.environmentMap.texture.colorSpace = THREE.SRGBColorSpace;
 
