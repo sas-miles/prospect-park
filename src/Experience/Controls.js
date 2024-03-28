@@ -12,6 +12,7 @@ export default class Controls {
     this.canvas = this.experience.canvas;
     this.camera = this.experience.camera.instance;
     this.cameraAnimations = this.experience.world.cameraAnimations;
+    this.debug = this.experience.debug;
 
     // Define variables here
     this.isDragging = false;
@@ -191,6 +192,14 @@ export default class Controls {
 
   initCursorEvents() {
     document.addEventListener("mousemove", (e) => {
+      if (this.debug.active) {
+        // Remove the no-cursor class from the body
+        document.body.classList.remove("no-cursor");
+        // Set pointer-events to none on the custom cursor elements
+        this.customCursorElement.style.pointerEvents = "none";
+        this.secondaryCursorElement.style.pointerEvents = "none";
+        return;
+      }
       // Continue to move both cursors with the mouse
       gsap.to([this.customCursorElement, this.secondaryCursorElement], {
         x: e.clientX,
@@ -223,6 +232,14 @@ export default class Controls {
 
   initGlobalCursorEvents() {
     document.addEventListener("mousemove", (e) => {
+      if (this.debug.active) {
+        // Remove the no-cursor class from the body
+        document.body.classList.remove("no-cursor");
+        // Set pointer-events to none on the custom cursor elements
+        this.customCursorElement.style.pointerEvents = "none";
+        this.secondaryCursorElement.style.pointerEvents = "none";
+        return;
+      }
       let isOverCanvas = this.canvas.contains(
         document.elementFromPoint(e.clientX, e.clientY)
       );

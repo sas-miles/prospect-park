@@ -13,7 +13,10 @@ export default class CameraAnimations {
 
     this.resource = this.resources.items.cameraPath;
 
+    this.camera.rotation.order = "YXZ"; // Adjust rotation order
+
     this.setCameraPath();
+    this.resetCameraState();
     this.animateCameraAlongPath();
   }
 
@@ -31,11 +34,19 @@ export default class CameraAnimations {
     this.path = new THREE.CatmullRomCurve3(points);
   }
 
+  resetCameraState() {
+    this.camera.position.set(0, 0, 0); // Use appropriate values
+    this.camera.rotation.x = THREE.MathUtils.degToRad(0);
+  }
+
   animateCameraAlongPath() {
     if (!this.path) {
       console.error("Path for animation is not set.");
       return;
     }
+
+    const initialPitch = THREE.MathUtils.degToRad(0); // Start with 0 degrees
+    const finalPitch = THREE.MathUtils.degToRad(-20); // End with -20 degrees
 
     // Assuming initialYaw is the camera's current yaw angle
     // and finalYaw is the desired yaw angle at the end of the animation
@@ -43,16 +54,12 @@ export default class CameraAnimations {
     const finalYaw = THREE.MathUtils.degToRad(0);
 
     // Object to track the progress of the path animation and yaw rotation
-    const animationProgress = { path: 0, yaw: initialYaw };
+    const animationProgress = { path: 0, yaw: initialYaw, pitch: initialPitch };
 
     let finalRotation = null;
 
     gsap
       .timeline({
-        onStart: () => {
-          this.eventEmitter.trigger("controls:disable");
-          // console.log("Camera animation started");
-        },
         onComplete: () => {
           this.eventEmitter.trigger("controls:enable");
           // console.log("Camera animation completed");
@@ -62,11 +69,13 @@ export default class CameraAnimations {
       .to(animationProgress, {
         path: 1,
         yaw: finalYaw,
+        pitch: finalPitch,
         duration: 8, // Duration in seconds
         onUpdate: () => {
           const point = this.path.getPointAt(animationProgress.path);
           this.camera.position.copy(point);
           this.camera.rotation.y = animationProgress.yaw;
+          this.camera.rotation.x = animationProgress.pitch;
 
           // Store the final position and rotation
           if (animationProgress.path === 1) {

@@ -11,6 +11,7 @@ import Debug from "./Utils/Debug.js";
 import Controls from "./Controls.js";
 import PostProcessing from "./PostProcessing.js";
 import Interface from "./Interface.js";
+import CameraAnimations from "./Animations/CameraAnimations.js";
 
 import sources from "./sources.js";
 
@@ -41,7 +42,12 @@ export default class Experience {
 
     this.controls = new Controls();
 
-    this.world.eventEmitter.on("ready", () => {
+    this.eventEmitter.trigger("controls:disable");
+
+    this.world.eventEmitter.on("intro:complete", () => {
+      console.log("Intro complete");
+
+      this.cameraAnimations = new CameraAnimations();
       this.interface = new Interface();
     });
 
@@ -58,7 +64,9 @@ export default class Experience {
 
   resize() {
     this.camera.resize();
-    this.interface.resize();
+    if (this.interface) {
+      this.interface.resize();
+    }
     this.renderer.resize();
     // this.postProcessing.resize();
   }
