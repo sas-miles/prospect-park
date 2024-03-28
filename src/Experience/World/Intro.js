@@ -73,7 +73,7 @@ export default class Intro extends EventEmitter {
             });
           },
         })
-        .to(this.button, { duration: 0.5, opacity: 0, ease: "power2.out" }, "a")
+        .to(this.button, { duration: 0.5, opacity: 0, ease: "power2.out" }, "b")
         .to(this.title, { duration: 0.5, opacity: 0, ease: "power2.out" }, "a")
         .to(this.credit, { duration: 0.5, opacity: 0, ease: "power2.out" }, "a")
         .to(
