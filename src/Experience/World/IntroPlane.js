@@ -3,8 +3,8 @@ import gsap from "gsap";
 
 import Experience from "../Experience.js";
 
-import planeVertexShader from "../shaders/IntroPlane/vertex.glsl";
-import planeFragmentShader from "../shaders/IntroPlane/fragment.glsl";
+import planeVertexShader from "../shaders/introPlane/vertex.glsl";
+import planeFragmentShader from "../shaders/introPlane/fragment.glsl";
 
 export default class IntroPlane {
   constructor() {
